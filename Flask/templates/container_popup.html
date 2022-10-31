@@ -1,0 +1,7 @@
+<form action="{{ url_for('container_update') }}" method="post">
+    <input type="hidden" name="container_num" value={{ container_num}} />
+    장치위치 : <input type="text" name="position" /><br>
+    규격 : <input type="text" name="scale" /><br>
+    F/M : <input type="text" name="fm" /><br>
+    <input type="submit" value="수정하기" />
+</form>

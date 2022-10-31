@@ -1,0 +1,17 @@
+version: '3'
+services:
+  flask:
+    build: ./Flask
+    image: alwida/flask
+    ports:
+      - 8888:8888
+    volumes:
+      - ./Flask:/usr/src/app
+  mariadb:
+    build: ./MariaDB
+    image: alwida/mariadb
+    volumes:
+      - ./MariaDB/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    
