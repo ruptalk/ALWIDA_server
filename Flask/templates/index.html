@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js
+"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+
+<h3><li>현재 트러커 수 : {{ terminal.car_amount }}</li></h3><p>
+
+<h3><li>혼잡도 상태 입력하기</li></h3>
+
+<form action="{{ url_for("congestion_update") }}" method="POST">
+  원활 : <input type="number" name="easy" min="0", value="{{ terminal.easy }}" />
+  보통 : <input type="number" name="normal" min="0"value="{{ terminal.normal }}" />
+  혼잡 : <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
+  <input type="submit" value="수정" />
+</form>
+<p>
+
+<h3><li>컨테이너 정보</li></h3>
+
+<table id='container-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>컨테이너번호</th>
+      <th>요청자</th>
+      <th>규격</th>
+      <th>F/M</th>
+      <th>장치위치</th>
+      <th>마지막처리일자</th>
+      <th>구분</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for container in containers%}
+      <tr>
+        <td>{{container.container_num}}</td>
+        <td>{{container.id}}</td>
+        <td>{{container.scale}}</td>
+        <td>{{container.fm}}</td>
+        <td>{{container.position}}</td>
+        <td>{{container.contain_last_time}}</td>
+        <td>{{container.in_out}}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+      $('#container-table').DataTable();
+    } );
+  </script>
+
+  <script>
+    var table =document.getElementById('container-table');
+    var rowList = table.rows; 
+    
+    for (i=1; i<rowList.length; i++) {
+        var row = rowList[i];
+        var tdsNum = row.childElementCount -1;
+  
+        row.onclick = function(){ 
+          return function(){ 
+            var container_num = this.cells[0].innerHTML; 
+            var url = "{{ url_for('container_popup') }}";
+            var name = "container_popup";
+            var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+  
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", url);
+            form.setAttribute("target", name);
+  
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = "container_num";
+            input.value = container_num;
+            form.appendChild(input);
+  
+            document.body.appendChild(form);
+  
+            popup = window.open(url, name, option);
+            form.submit();
+            document.body.removeChild(form);
+            var timer=setInterval(function(){
+              if(popup.closed) {
+                clearInterval(timer);
+                window.location.reload()
+              }
+            })
+         }
+      }(row)
+    }
+  </script>  
+
+{% endblock %}

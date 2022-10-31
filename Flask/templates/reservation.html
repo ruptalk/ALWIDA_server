@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js
+"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+
+<h3><li>예약 현황</li></h3>
+
+<table id='reservation-table' class="uk-table uk-table-hover uk-table-striped">
+    <thead>
+      <tr>
+        <th>구분</th>
+        <th>요청 시간</th>
+        <th>트러커</th>
+        <th>컨테이너번호</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations%}
+        <tr>
+          <td>{{reservation.response_publish}}</td>
+          <td>{{reservation.request_time}}</td>
+          <td>{{reservation.id}}</td>
+          <td>{{reservation.container_num}}</td>
+      </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  
+  <script type="text/javascript">
+      $(document).ready( function () {
+        $('#reservation-table').DataTable();
+      } );
+    </script>
+
+
+{% endblock %}
