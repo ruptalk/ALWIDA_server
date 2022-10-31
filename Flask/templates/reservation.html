@@ -32,12 +32,78 @@
         {% endfor %}
     </tbody>
   </table>
+
+  <h3><li>시간대별 트러커 예약 현황</li></h3>
+
+  <table id='accept-table' class="uk-table uk-table-hover uk-table-striped">
+    <thead>
+      <tr>
+        <th>예약시간</th>
+        <th>방문 트러커 수</th>
+        <th>상태</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for accept in accepts%}
+        <tr>
+          <td>{{accept[0] }}</td>
+          <td>{{accept[1] }}</td>
+          <td>{{accept[2] }}</td>
+      </tr>
+        {% endfor %}
+    </tbody>
+  </table>
   
   <script type="text/javascript">
       $(document).ready( function () {
         $('#reservation-table').DataTable();
       } );
+      $(document).ready( function () {
+        $('#accept-table').DataTable();
+      } );
     </script>
 
+    <script>
+      var table =document.getElementById('reservation-table');
+      var rowList = table.rows; 
+      
+      for (i=1; i<rowList.length; i++) {
+          var row = rowList[i];
+          var tdsNum = row.childElementCount -1;
+    
+          row.onclick = function(){ 
+            return function(){ 
+              var id = this.cells[2].innerHTML; 
+              var url = "{{ url_for('reservation_popup') }}";
+              var name = "reservation_popup";
+              var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+    
+              var form = document.createElement("form");
+              form.setAttribute("method", "post");
+              form.setAttribute("action", url);
+              form.setAttribute("target", name);
+    
+              var input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = "id";
+              input.value = id;
+              form.appendChild(input);
+    
+              document.body.appendChild(form);
+    
+              popup = window.open(url, name, option);
+              form.submit();
+              
+              document.body.removeChild(form);
+              var timer=setInterval(function(){
+                if(popup.closed) {
+                  clearInterval(timer);
+                  window.location.reload()
+                }
+              })
+           }
+        }(row)
+      }
+    </script>  
 
 {% endblock %}

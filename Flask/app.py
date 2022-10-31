@@ -1,7 +1,7 @@
-from calendar import c
 import os
-from flask import Flask, request, render_template, session, url_for, flash
+from flask import Flask, request, render_template, session, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, inspect
 
 db = {
     'user':'root',
@@ -58,7 +58,7 @@ class reservation_table(db.Model):
     container_num = db.Column(db.String(30), nullable=False)
     tn = db.Column(db.String(30), nullable=False)
     request_time = db.Column(db.DateTime, nullable=False)
-    accept_time = db.Column(db.DateTIme, nullable=True)
+    accept_time = db.Column(db.DateTime, nullable=True)
     response_publish = db.Column(db.Boolean, nullable=False)
     suggestion = db.Column(db.DateTime, nullable=True)
 
@@ -77,9 +77,9 @@ def index():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     usr = session.get("info")
-    admin = admin_table.query.filter_by(id=usr["id"]).first()
-    terminal = terminal_table.query.filter_by(tn=admin.tn).first()
-    container = container_table.query.filter_by(tn=admin.tn).all()
+    admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
+    terminal = terminal_table.query.filter_by(tn=admin_tn).first()
+    container = container_table.query.filter_by(tn=admin_tn).all()
     return render_template('index.html', terminal=terminal, containers=container)
 
 @app.route("/signin", methods=['GET','POST'],  endpoint='signin')
@@ -113,8 +113,8 @@ def congestion_update():
         difficalt = request.form.get("difficalt","")
         
         usr = session.get("info")
-        admin = admin_table.query.filter_by(id=usr["id"]).first()
-        terminal = terminal_table.query.filter_by(tn=admin.tn).first()
+        admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
+        terminal = terminal_table.query.filter_by(tn=admin_tn).first()
         
         terminal.easy = easy
         terminal.normal = normal
@@ -145,7 +145,7 @@ def container_update():
     contaniner.fm = fm
     
     db.session.commit()
-    return '<script>alert("완료!");window.close(); </script>'
+    return '<script>alert("완료!");window.close();</script>'
 
 @app.route("/reservation", methods=["GET"])
 def reservation():
@@ -153,9 +153,38 @@ def reservation():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        admin = admin_table.query.filter_by(id=usr["id"]).first()
-        reservation = reservation_table.query.filter_by(tn=admin.tn).all()
+        admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
+        reservation = reservation_table.query.filter_by(tn=admin_tn).all()
+        accept = reservation_table.query.with_entities(reservation_table.accept_time, func.count(reservation_table.accept_time).label('count')).filter((reservation_table.tn==usr["tn"] )&(reservation_table.accept_time != None)).group_by(func.hour(reservation_table.accept_time), func.floor(func.minute(reservation_table.accept_time)/30)*10).order_by(reservation_table.accept_time).all()
+        terminal = terminal_table.query.filter_by(tn=admin_tn).first()
         
-        return render_template('reservation.html', reservations=reservation)
+        accept_list =  [[x[0],x[1]] for x in accept]
+        
+        for acc in accept_list:
+            if(acc[0].minute >= 0 and acc[0].minute < 30):
+                acc[0] = acc[0].replace(minute=0)
+            else:
+                acc[0] = acc[0].replace(minute=30)
+        
+        for acc in accept_list:
+            print(acc[1])
+            if(acc[1] < terminal.normal):
+                acc.append('원활')
+            elif(acc[1] <= terminal.normal):
+                acc.append('보통')
+            else:
+                acc.append('혼잡')
+        return render_template('reservation.html', reservations=reservation, accepts=accept_list)
+
+@app.route("/reservation_popup", methods=["POST"])
+def reservation_popup():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    id = request.form.get("id","")
+    usr = session.get("info")
+    reservation = reservation_table.query.filter((reservation_table.tn==usr["tn"] )&(reservation_table.accept_time != None)).order_by(reservation_table.accept_time).all()
+    # accept = reservation_table.query.with_entities(reservation_table.accept_time, func.count(reservation_table.accept_time).label('count')).filter((reservation_table.tn==usr["tn"] )&(reservation_table.accept_time != None)).group_by(func.hour(reservation_table.accept_time), func.floor(func.minute(reservation_table.accept_time)/30)*10).order_by('count', reservation_table.accept_time).all()
+    
+    return render_template('reservation_popup.html', id=id)
 
 app.run(host="0.0.0.0", port=8888)
