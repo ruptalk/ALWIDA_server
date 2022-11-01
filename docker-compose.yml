@@ -7,6 +7,8 @@ services:
       - 8888:8888
     volumes:
       - ./Flask:/usr/src/app
+    environment:
+      - TZ=Asia/Seoul
   mariadb:
     build: ./MariaDB
     image: alwida/mariadb
@@ -14,4 +16,6 @@ services:
       - ./MariaDB/data:/var/lib/mysql
     ports:
       - 3306:3306
+    environment:
+      - TZ=Asia/Seoul
     
