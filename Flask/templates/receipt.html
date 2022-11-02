@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js
+"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+
+<table id='receipt-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>컨테이너번호</th>
+      <th>요청자</th>
+      <th>발행여부</th>
+      <th>장치위치</th>
+      <th>규격</th>
+      <th>F/M</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for receipt in receipts%}
+      <tr>
+        <td>{{receipt.container_num}}</td>
+        <td>{{receipt.id}}</td>
+        <td>
+          {% if receipt.publish %}
+          발행
+          {% else %}
+          미발행
+          {% endif %}
+        </td>
+        <td>{{receipt.position}}</td>
+        <td>{{receipt.scale}}</td>
+        <td>{{receipt.fm}}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+      $('#receipt-table').DataTable();
+    } );
+  </script>
+  <script>
+    var table =document.getElementById('receipt-table');
+    var rowList = table.rows; 
+    
+    for (i=1; i<rowList.length; i++) {
+        var row = rowList[i];
+        var tdsNum = row.childElementCount -1;
+  
+        row.onclick = function(){ 
+          return function(){ 
+            var check = confirm("인수도증을 발급하시겠습니까?");
+
+            if(check){
+              var container_num = this.cells[0].innerHTML; 
+              var id = this.cells[1].innerHTML;
+
+              var url = "{{ url_for('receipt') }}";
+              var name = "receipt";
+              var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+  
+              var form = document.createElement("form");
+              form.setAttribute("method", "post");
+              form.setAttribute("action", url);
+              form.setAttribute("target", name);
+  
+              var input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = "container_num";
+              input.value = container_num;
+              form.appendChild(input);
+
+              var input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = "id";
+              input.value = id;
+              form.appendChild(input);
+
+              document.body.appendChild(form);
+  
+              form.submit();
+              document.body.removeChild(form);
+            }
+         }
+      }(row)
+    }
+  </script>  
+
+{% endblock %}

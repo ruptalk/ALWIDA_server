@@ -63,8 +63,7 @@ CREATE TABLE `reservation_table` (
 	`tn`	VARCHAR(30)	NOT NULL,
 	`request_time`	DATETIME	NOT NULL,
 	`accept_time`	DATETIME	NULL,
-	`response_publish`	BOOLEAN	NOT NULL,
-	`suggestion`	DATETIME	NULL
+	`suggestion`	VARCHAR(20)	NULL
 );
 
 ALTER TABLE `user_table` ADD CONSTRAINT `PK_USER_TABLE` PRIMARY KEY (
@@ -190,31 +189,42 @@ INSERT INTO user_table VALUES ('user13','user13','user13','01055555555','5555','
 INSERT INTO user_table VALUES ('user14','user14','user14','01055555555','5555','AAAA', 1, 1);
 
 INSERT INTO container_table VALUES ('1111','user1','부산 터미널1','규격1','F','장치위치1',NOW(),1);
-INSERT INTO reservation_table VALUES ('user1', '1111', '부산 터미널1',NOW(), NULL, 0, NULL);
+INSERT INTO reservation_table VALUES ('user1', '1111', '부산 터미널1',NOW(), NULL, NULL);
 INSERT INTO container_table VALUES ('2222','user2','부산 터미널1','규격2','F','장치위치2',NOW(),1);
-INSERT INTO reservation_table VALUES ('user2', '2222', '부산 터미널1',NOW(), NULL, 0, NULL);
+INSERT INTO reservation_table VALUES ('user2', '2222', '부산 터미널1',NOW(), NULL, NULL);
 INSERT INTO container_table VALUES ('3333','user3','부산 터미널1','규격3','F','장치위치3',NOW(),1);
-INSERT INTO reservation_table VALUES ('user3', '3333', '부산 터미널1',NOW(), NULL, 0, NULL);
+INSERT INTO reservation_table VALUES ('user3', '3333', '부산 터미널1',NOW(), NULL, NULL);
 INSERT INTO container_table VALUES ('4444','user4','부산 터미널1','규격4','F','장치위치4',NOW(),1);
-INSERT INTO reservation_table VALUES ('user4', '4444', '부산 터미널1',NOW(), NULL, 0, NULL);
+INSERT INTO reservation_table VALUES ('user4', '4444', '부산 터미널1',NOW(), NULL, NULL);
 INSERT INTO container_table VALUES ('5555','user5','부산 터미널2','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user5', '5555', '부산 터미널2',NOW(), NULL, 0, NULL);
+INSERT INTO reservation_table VALUES ('user5', '5555', '부산 터미널2',NOW(), NULL, NULL);
 
 INSERT INTO container_table VALUES ('6666','user6','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user6', '6666', '부산 터미널1',"2022-11-01 06:00:00", "2022-11-01 06:00:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user6', '6666', '부산 터미널1',"2022-11-01 06:00:00", "2022-11-01 06:00:00", NULL);
 INSERT INTO container_table VALUES ('7777','user7','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user7', '7777', '부산 터미널1',"2022-11-01 06:05:00", "2022-11-01 06:05:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user7', '7777', '부산 터미널1',"2022-11-01 06:05:00", "2022-11-01 06:05:00", NULL);
 INSERT INTO container_table VALUES ('8888','user8','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user8', '8888', '부산 터미널1',"2022-11-01 06:29:00", "2022-11-01 06:29:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user8', '8888', '부산 터미널1',"2022-11-01 06:29:00", "2022-11-01 06:29:00", NULL);
 INSERT INTO container_table VALUES ('9999','user9','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user9', '9999', '부산 터미널1',"2022-11-01 06:30:00", "2022-11-01 06:30:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user9', '9999', '부산 터미널1',"2022-11-01 06:30:00", "2022-11-01 06:30:00", NULL);
 INSERT INTO container_table VALUES ('10101010','user10','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user10', '10101010', '부산 터미널1',"2022-11-01 06:35:00", "2022-11-01 06:35:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user10', '10101010', '부산 터미널1',"2022-11-01 06:35:00", "2022-11-01 06:35:00", NULL);
 INSERT INTO container_table VALUES ('11111111','user11','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user11', '11111111', '부산 터미널1',"2022-11-01 07:19:00", "2022-11-01 07:19:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user11', '11111111', '부산 터미널1',"2022-11-01 07:19:00", "2022-11-01 07:19:00", NULL);
 INSERT INTO container_table VALUES ('12121212','user12','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user12', '12121212', '부산 터미널1',"2022-11-01 07:00:00", "2022-11-01 07:00:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user12', '12121212', '부산 터미널1',"2022-11-01 07:00:00", "2022-11-01 07:00:00", NULL);
 INSERT INTO container_table VALUES ('13131313','user13','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user13', '13131313', '부산 터미널1',"2022-11-01 07:15:00", "2022-11-01 07:15:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user13', '13131313', '부산 터미널1',"2022-11-01 07:15:00", "2022-11-01 07:15:00", NULL);
 INSERT INTO container_table VALUES ('14141414','user14','부산 터미널1','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user14', '14141414', '부산 터미널1',"2022-11-01 07:29:00", "2022-11-01 07:29:00", 1, NULL);
+INSERT INTO reservation_table VALUES ('user14', '14141414', '부산 터미널1',"2022-11-01 07:29:00", "2022-11-01 07:29:00", NULL);
+
+INSERT INTO receipt_table VALUES ('1111','user1',0,NULL);
+INSERT INTO receipt_table VALUES ('2222','user2',0,NULL);
+INSERT INTO receipt_table VALUES ('3333','user3',0,NULL);
+INSERT INTO receipt_table VALUES ('4444','user4',0,NULL);
+INSERT INTO receipt_table VALUES ('5555','user5',0,NULL);
+INSERT INTO receipt_table VALUES ('6666','user6',1,NOW());
+INSERT INTO receipt_table VALUES ('7777','user7',1,NOW());
+INSERT INTO receipt_table VALUES ('8888','user8',1,NOW());
+INSERT INTO receipt_table VALUES ('9999','user9',1,NOW());
+INSERT INTO receipt_table VALUES ('10101010','user10',1,NOW());

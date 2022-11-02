@@ -17,10 +17,10 @@
             <div class="border-end bg-white" id="sidebar-wrapper">
                 <div class="sidebar-heading border-bottom bg-light">ALWIDA</div>
                 <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('index') }}">터미널 정보</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('reservation') }}">예약 요청 수락</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="">온라인 인수도증</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="">목적지 혼잡도</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">검사 기능</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('receipt') }}">인수도증 발급 현황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="">현금 수납 상황</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
