@@ -4,7 +4,7 @@
 <form action="{{ url_for('signin') }}" method="post">
     ID : <input type="text" placeholder="ID" name="id" /><br>
     Password : <input type="password" placeholder="Password" name="pw" /><br>
-    <a href="">회원가입</a><br>
+    <a href="{{ url_for('signup') }}">회원가입</a><br>
     <input type="submit" value="로그인"> 
 </form>
 
