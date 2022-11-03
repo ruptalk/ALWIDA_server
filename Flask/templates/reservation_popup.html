@@ -1,0 +1,73 @@
+<table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            <th>시간</th>
+            <th>차량수</th>
+            <th>혼잡도</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key in result %}
+        <tr>
+            <th><input type="checkbox" name="time" onclick=CountChecked(this) value="{{ key }}"/>
+            <th>{{ key }}</th>
+            <th>{{ result[key][0] }}</th>
+            <th>{{ result[key][1] }}</th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<button onclick=sendTime()>추천</button>
+
+<script>
+    var maxChecked = 3;
+    var totalChecked = 0;
+
+    function CountChecked(field) {
+        if(field.checked)
+            totalChecked += 1;
+        else
+            totalChecked -= 1; 
+        if(totalChecked > maxChecked) {
+            alert ("최대 3개 까지만 가능합니다.");
+            field.checked = false;
+            totalChecked -= 1;
+        } 
+    }
+    function sendTime(){
+        var chkList = document.querySelectorAll("input[name=time]:checked");
+        var tileList = [];
+        var id = "{{ id }}";
+
+        chkList.forEach(function(element){
+            tileList.push(element.value);
+        });
+        
+        var url = "{{ url_for('reservation_update') }}";
+        var name = "reservation_update";
+  
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", url);
+        form.setAttribute("target", name);
+  
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = "timeList";
+        input.value = tileList;
+        form.appendChild(input);
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = "id";
+        input.value = id;
+        form.appendChild(input);
+        
+        console.log("TEst");
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        window.open("about:blank", "_self").close();
+    }
+</script>
