@@ -70,6 +70,12 @@ class receipt_table(db.Model):
     publish = db.Column(db.Boolean, nullable=False)
     publish_datetime = db.Column(db.DateTime, nullable=True)
 
+class cash_table(db.Model):
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    container_num = db.Column(db.String(30), nullable=False)
+    publish_pay = db.Column(db.Boolean, nullable=False)
+    pay_datetime = db.Column(db.DateTime, nullable=True)
+
 def alert(msg, loc=None):
     if loc:
         return f'<script>alert("{msg}");location.href="{loc}";</script>'
@@ -300,7 +306,7 @@ def receipt():
         try:
             id = request.form.get("id","")
             container_num = request.form.get("container_num","")
-            receipt = receipt_table.query.filter_by(id=id).first()
+            receipt = receipt_table.query.filter((id==id)&(container_num==container_num)).first()
             receipt.publish = True
             db.session.commit()
         
@@ -308,11 +314,24 @@ def receipt():
         except:
             return alert('에러발생')
 
-@app.route("/cash", methods=["GET"])
+@app.route("/cash", methods=["GET","POST"])
 def cash():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
-        return "test"
-
+        usr = session.get("info")
+        cash = cash_table.query.filter_by().all()
+        
+        return render_template('cash.html', cashs=cash, usr=usr, check=is_login())
+    elif(request.method=="POST"):
+        id = request.form.get("id","")
+        container_num = request.form.get("container_num","")
+        
+        cash = cash_table.query.filter((id==id)&(container_num==container_num)).first()
+        cash.publish_pay = True
+        cash.pay_datetime = datetime.now()
+        db.session.commit()
+        
+        return alert('발급완료!')
+        
 app.run(host="0.0.0.0", port=8888)

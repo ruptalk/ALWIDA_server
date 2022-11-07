@@ -10,44 +10,46 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 
-<table id='receipt-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='cash-table' class="uk-table uk-table-hover uk-table-striped">
   <thead>
     <tr>
-      <th>컨테이너번호</th>
-      <th>요청자</th>
-      <th>발행여부</th>
-      <th>장치위치</th>
-      <th>규격</th>
-      <th>F/M</th>
+      <th>트러커</th>
+      <th>컨테이너 번호</th>
+      <th>지급일시</th>
+      <th>수납상태</th>
     </tr>
   </thead>
   <tbody>
-      {% for receipt in receipts%}
+      {% for cash in cashs%}
       <tr>
-        <td>{{receipt.container_num}}</td>
-        <td>{{receipt.id}}</td>
+        <td>{{cash.id}}</td>
+        <td>{{cash.container_num}}</td>
         <td>
-          {% if receipt.publish %}
-          발행
+          {% if cash.publish_pay %}
+          수납완료
           {% else %}
-          미발행
+          미정산
           {% endif %}
         </td>
-        <td>{{receipt.position}}</td>
-        <td>{{receipt.scale}}</td>
-        <td>{{receipt.fm}}</td>
+        <td>
+        {% if cash.pay_datetime == None%}
+        x
+        {% else %}
+        {{cash.pay_datetime}}
+        {% endif %}
+      </td>
     </tr>
       {% endfor %}
   </tbody>
 </table>
 
 <div id="myModal" class="modal">
-  <div class="modal-receipt">
+  <div class="modal-cash">
     <span class="close">&times;</span>
-    <form action="{{ url_for('receipt') }}" method="post">
+    <form action="{{ url_for('cash') }}" method="post">
       <input type="hidden" id="id" name="id" />
       <input type="hidden" id="container_num" name="container_num" />
-      <h2 id="h2_num">인수도증 발급</h2>
+      <h2 id="h2_num">현금수납 발급</h2>
       <h4 id="h4_comment"></h3>
       <input type="submit" value="확인" />
   </form>
@@ -56,12 +58,12 @@
 
 <script type="text/javascript">
     $(document).ready( function () {
-      $('#receipt-table').DataTable();
+      $('#cash-table').DataTable();
     } );
   </script>
   <script>
     var modal = document.getElementById("myModal");
-    var table =document.getElementById('receipt-table');
+    var table =document.getElementById('cash-table');
     var rowList = table.rows; 
 
     var span = document.getElementsByClassName("close")[0];
@@ -80,12 +82,12 @@
   
         row.onclick = function(){ 
           return function(){ 
-            var container_num = this.cells[0].innerHTML; 
-            var id = this.cells[1].innerHTML;
+            var id = this.cells[0].innerHTML; 
+            var container_num = this.cells[1].innerHTML;
 
             document.getElementById('id').value = id;
             document.getElementById('container_num').value = container_num;
-            document.getElementById('h4_comment').innerHTML = '<font color=#221A76>'+id+'</font>님이 요청하신 컨테이너 <font color=#221A76>'+container_num+'</font> 인수도증을 발급하시겠습니까?';
+            document.getElementById('h4_comment').innerHTML = '<font color=#221A76>'+id+'</font>님  컨테이너 <font color=#221A76>'+container_num+'</font> 현금수납을 발급하시겠습니까?';
             modal.style.display = "block";
          }
       }(row);

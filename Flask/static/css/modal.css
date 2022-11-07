@@ -47,6 +47,17 @@ body {font-family: Arial, Helvetica, sans-serif;}
   text-align: center;
 }
 
+.modal-cash {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  max-width: 30%;
+  max-height: 70%;
+  overflow-y: auto;
+  text-align: center;
+}
+
 .div-terminal {
   margin-top: 3%;
 }
