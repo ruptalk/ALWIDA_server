@@ -11,7 +11,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
     </head>
-    <body>
+    <body class=>
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
             <div class="border-end bg-white" id="sidebar-wrapper">
@@ -32,9 +32,12 @@
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                                <li class="nav-item active"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                                {% if check == None %}
                                 <li class="nav-item"><a class="nav-link" href="{{ url_for('signin') }}">로그인</a></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link">{{ usr["tn"] }} {{ usr["name"] }} 관리자님</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}">로그아웃</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>

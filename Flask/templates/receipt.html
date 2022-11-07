@@ -3,11 +3,12 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js
-"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 
 <table id='receipt-table' class="uk-table uk-table-hover uk-table-striped">
   <thead>
@@ -40,14 +41,38 @@
   </tbody>
 </table>
 
+<div id="myModal" class="modal">
+  <div class="modal-receipt">
+    <span class="close">&times;</span>
+    <form action="{{ url_for('receipt') }}" method="post">
+      <input type="hidden" id="id" name="id" />
+      <input type="hidden" id="container_num" name="container_num" />
+      <h2 id="h2_num">인수도증 발급</h2>
+      <h4 id="h4_comment"></h3>
+      <input type="submit" value="확인" />
+  </form>
+  </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready( function () {
       $('#receipt-table').DataTable();
     } );
   </script>
   <script>
+    var modal = document.getElementById("myModal");
     var table =document.getElementById('receipt-table');
     var rowList = table.rows; 
+
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
     
     for (i=1; i<rowList.length; i++) {
         var row = rowList[i];
@@ -55,40 +80,15 @@
   
         row.onclick = function(){ 
           return function(){ 
-            var check = confirm("인수도증을 발급하시겠습니까?");
+            var container_num = this.cells[0].innerHTML; 
+            var id = this.cells[1].innerHTML;
 
-            if(check){
-              var container_num = this.cells[0].innerHTML; 
-              var id = this.cells[1].innerHTML;
-
-              var url = "{{ url_for('receipt') }}";
-              var name = "receipt";
-              var option = "width = 500, height = 500, top = 100, left = 200, location = no"
-  
-              var form = document.createElement("form");
-              form.setAttribute("method", "post");
-              form.setAttribute("action", url);
-              form.setAttribute("target", name);
-  
-              var input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = "container_num";
-              input.value = container_num;
-              form.appendChild(input);
-
-              var input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = "id";
-              input.value = id;
-              form.appendChild(input);
-
-              document.body.appendChild(form);
-  
-              form.submit();
-              document.body.removeChild(form);
-            }
+            document.getElementById('id').value = id;
+            document.getElementById('container_num').value = container_num;
+            document.getElementById('h4_comment').innerHTML = '<font color=#221A76>'+id+'</font>이 요청하신 컨테이너 <font color=#221A76>'+container_num+'</font> 인수도증을 발급하시겠습니까?';
+            modal.style.display = "block";
          }
-      }(row)
+      }(row);
     }
   </script>  
 
