@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, inspect
 from datetime import datetime
 from operator import itemgetter
+import uuid
 
 db = {
     'user':'root',
@@ -32,7 +33,7 @@ class admin_table(db.Model):
     def to_json(self):
         return {
             "id" : self.id,
-            "pw":self.pw,
+            "name" : self.name,
             "tn":self.tn
         }
 
@@ -69,30 +70,27 @@ class receipt_table(db.Model):
     publish = db.Column(db.Boolean, nullable=False)
     publish_datetime = db.Column(db.DateTime, nullable=True)
 
+class cash_table(db.Model):
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    container_num = db.Column(db.String(30), nullable=False)
+    publish_pay = db.Column(db.Boolean, nullable=False)
+    pay_datetime = db.Column(db.DateTime, nullable=True)
+
 def alert(msg, loc=None):
     if loc:
         return f'<script>alert("{msg}");location.href="{loc}";</script>'
     else:
-        return f'<script>alert("{msg}");history.back(1);</script>'
+        return f'<script>alert("{msg}");location.href = document.referrer;</script>'
     
 def is_login():
     return session.get("info")
 
-@app.route("/")
-@app.route("/index")
-def index():
-    if not is_login():
-        return alert("로그인부터 해주세요!","/signin")
-    usr = session.get("info")
-    admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
-    terminal = terminal_table.query.filter_by(tn=admin_tn).first()
-    container = container_table.query.filter_by(tn=admin_tn).all()
-    return render_template('index.html', terminal=terminal, containers=container)
-
 @app.route("/signin", methods=['GET','POST'])
 def signin():
+    if is_login():
+        return alert("이미 로그인하셨습니다!","/")
     if(request.method == 'GET'):
-        return render_template('signin.html')
+        return render_template('signin.html',check=is_login())
     elif(request.method == 'POST'):
         id = request.form.get("id","")
         pw = request.form.get("pw","")
@@ -106,15 +104,27 @@ def signin():
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if(request.method=="GET"):
-        return render_template('signup.html')
+        tns = terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
+        return render_template('signup.html',tns=tns, check=is_login())
     elif(request.method=="POST"):
-        name = request.form.get("name","")
-        id = request.form.get("id","")
-        pw = request.form.get("pw","")
-        phone = request.form.get("phone","")
-        group = request.form.get("group","")
-        
-        return alert("완료!")
+        try:
+            name = request.form.get("name","")
+            id = request.form.get("id","")
+            pw = request.form.get("pw","")
+            phone = request.form.get("phone","")
+            group = request.form.get("group","")
+            
+            admin = admin_table.query.filter_by(id=id, pw=pw).first()
+            if(hasattr(admin, 'id')):
+                return alert("이미 존재하는 아이디입니다!")
+            
+            new_admin = admin_table(uid=str(uuid.uuid4()),id=id,pw=pw,phone=phone,tn=group,name=name,enroll=False)
+            db.session.add(new_admin)
+            db.session.commit()
+            
+            return alert("완료!")
+        except:
+            return alert("에러!")
         
 @app.route("/signout")
 def signout():
@@ -122,36 +132,42 @@ def signout():
         return alert("로그인부터 해주세요!","/signin")
     del session["info"]
     return alert("로그아웃!","/")
-    
-@app.route("/congestion_update", methods=["POST"])
-def congestion_update():
+
+@app.route("/")
+@app.route("/index")
+def index():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
-    if(request.method=="POST"):
-        try:
-            easy = request.form.get("easy","")
-            normal = request.form.get("normal","")
-            difficalt = request.form.get("difficalt","")
+    if(request.method=="GET"):
+        usr = session.get("info")
+        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
+        container = container_table.query.filter_by(tn=usr["tn"]).all()
+        tns = terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
+        return render_template('terminal.html', terminal=terminal, containers=container, tns=tns, usr=usr, check=is_login())
+
+@app.route("/terminal_update", methods=["POST"])
+def terminal_update():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    try:
+        car_amount = request.form.get("car_amount")
+        easy = request.form.get("easy","")
+        normal = request.form.get("normal","")
+        difficalt = request.form.get("difficalt","")
         
-            usr = session.get("info")
-            admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
-            terminal = terminal_table.query.filter_by(tn=admin_tn).first()
-            
-            terminal.easy = easy
-            terminal.normal = normal
-            terminal.difficalt = difficalt
-            
-            db.session.commit()
-            return alert("완료!")
-        except:
-            return alert("에러발생")
-    
-@app.route("/container_popup", methods=["POST"])
-def container_popup():
-    if not is_login():
-        return alert("로그인부터 해주세요!","/signin")
-    container_num = request.form.get("container_num","")
-    return render_template('container_popup.html', container_num=container_num)
+        usr = session.get("info")
+        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
+        
+        terminal.car_amount = car_amount    
+        terminal.easy = easy
+        terminal.normal = normal
+        terminal.difficalt = difficalt
+        
+        db.session.commit()
+        
+        return alert("완료!")
+    except:
+        return alert("에러발생")
     
 @app.route("/container_update", methods=["POST"])
 def container_update():
@@ -169,14 +185,13 @@ def container_update():
         contaniner.fm = fm
         
         db.session.commit()
-        return '<script>alert("완료!");window.close();</script>'
+        return alert("완료!")
     except:
-        return '<script>alert("에러발생");window.close();</script>'
+        return alert("에러발생")
 
 def congestion(count):
     usr = session.get("info")
-    admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
-    terminal = terminal_table.query.filter_by(tn=admin_tn).first()
+    terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
     
     if(count < terminal.normal):
         return '원활'
@@ -220,14 +235,13 @@ def recommand(accept):
             result[thirty[:2] + ':' + thirty[2:]] = result.pop(thirty)
     return result
 
-@app.route("/reservation", methods=["GET"])
+@app.route("/reservation", methods=["GET", "POST"])
 def reservation():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
-        reservation = reservation_table.query.filter_by(tn=admin_tn).all()
+        reservation = reservation_table.query.filter_by(tn=usr["tn"]).all()
         
         accept = reservation_table.query.with_entities(
             reservation_table.accept_time,
@@ -242,7 +256,18 @@ def reservation():
             func.floor(func.minute(reservation_table.accept_time)/30)*10
         ).order_by(reservation_table.accept_time).all()
         
-        terminal = terminal_table.query.filter_by(tn=admin_tn).first()
+        suggestion = reservation_table.query.with_entities(
+            func.date_format(reservation_table.accept_time, '%H%i'),
+            func.count(reservation_table.accept_time).label('count')
+        ).filter(
+            (reservation_table.tn == usr["tn"])&
+            (reservation_table.accept_time != None)&
+            (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
+            # &(reservation_table.accept_time >= func.now())
+        ).group_by(
+            func.hour(reservation_table.accept_time),
+            func.floor(func.minute(reservation_table.accept_time)/30)*10
+        ).order_by(reservation_table.accept_time).all()
         
         accept_list =  [[x[0],x[1]] for x in accept]
         
@@ -253,45 +278,18 @@ def reservation():
                 acc[0] = acc[0].replace(minute=30)
             
             acc.append(congestion(acc[1]))
-        return render_template('reservation.html', reservations=reservation, accepts=accept_list)
-    
-@app.route("/reservation_popup", methods=["POST"])
-def reservation_popup():
-    if not is_login():
-        return alert("로그인부터 해주세요!","/signin")
-    usr = session.get("info")
-    id = request.form.get("id","")
-    
-    accept = reservation_table.query.with_entities(
-        func.date_format(reservation_table.accept_time, '%H%i'),
-        func.count(reservation_table.accept_time).label('count')
-    ).filter(
-        (reservation_table.tn == usr["tn"])&
-        (reservation_table.accept_time != None)&
-        (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
-        # &(reservation_table.accept_time >= func.now())
-    ).group_by(
-        func.hour(reservation_table.accept_time),
-        func.floor(func.minute(reservation_table.accept_time)/30)*10
-    ).order_by(reservation_table.accept_time).all()
-    
-    result = recommand(accept)
-    return render_template('reservation_popup.html', result=result, id=id)
-
-@app.route("/reservation_update", methods=["POST"])
-def reservation_update(): 
-    if not is_login():
-        return alert("로그인부터 해주세요!","/signin")
-    try:
-        timeList = request.form.get("timeList","")
-        id = request.form.get("id","")
-        reservation = reservation_table.query.filter_by(id=id).first()
-        reservation.suggestion = timeList
+        return render_template('reservation.html', reservations=reservation, suggestions=recommand(suggestion), accepts=accept_list, usr=usr, check=is_login())
+    elif(request.method=="POST"):
+        try:
+            timeList = ','.join(request.form.getlist("timeList"))
+            id = request.form.get("id","")
+            reservation = reservation_table.query.filter_by(id=id).first()
+            reservation.suggestion = timeList
         
-        db.session.commit()
-        return '<script>alert("완료!");window.close();</script>'
-    except:
-        return '<script>alert("에러발생");window.close();</script>'
+            db.session.commit()
+            return alert("완료!")
+        except:
+            return alert("에러발생")
 
 @app.route("/receipt", methods=["GET", "POST"])
 def receipt():
@@ -299,29 +297,41 @@ def receipt():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        admin_tn = admin_table.query.filter_by(id=usr["id"]).first().tn
         receipt = receipt_table.query.join(container_table, container_table.container_num==receipt_table.container_num)\
                                                                 .with_entities(receipt_table.container_num, receipt_table.id, receipt_table.publish, container_table.position, container_table.scale, container_table.fm)\
-                                                                .filter(container_table.tn == admin_tn).all()
+                                                                .filter(container_table.tn == usr["tn"]).all()
                                               
-        return render_template('receipt.html', receipts=receipt)
+        return render_template('receipt.html', receipts=receipt, usr=usr, check=is_login())
     elif(request.method=="POST"):
         try:
             id = request.form.get("id","")
             container_num = request.form.get("container_num","")
-            receipt = receipt_table.query.filter_by(id=id).first()
+            receipt = receipt_table.query.filter((id==id)&(container_num==container_num)).first()
             receipt.publish = True
             db.session.commit()
         
-            return f'<script>alert("{id}가 요청하신 컨테어너 번호 {container_num} 발급이 완료되었습니다.");window.close();</script>'
+            return alert('발급완료!')
         except:
-            return '<script>alert("에러발생");window.close();</script>'
+            return alert('에러발생')
 
-@app.route("/cash", methods=["GET"])
+@app.route("/cash", methods=["GET","POST"])
 def cash():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
-        return "test"
-
+        usr = session.get("info")
+        cash = cash_table.query.filter_by().all()
+        
+        return render_template('cash.html', cashs=cash, usr=usr, check=is_login())
+    elif(request.method=="POST"):
+        id = request.form.get("id","")
+        container_num = request.form.get("container_num","")
+        
+        cash = cash_table.query.filter((id==id)&(container_num==container_num)).first()
+        cash.publish_pay = True
+        cash.pay_datetime = datetime.now()
+        db.session.commit()
+        
+        return alert('발급완료!')
+        
 app.run(host="0.0.0.0", port=8888)

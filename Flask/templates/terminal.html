@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+
+<form action="{{ url_for("terminal_update") }}" method="POST">
+<div style="float: left;">
+  <select name="group">
+    {% for tn in tns%}
+    <option value="{{tn[0]}}">{{tn[0]}}</option>
+    {% endfor%}
+</select>
+</div>
+<div style="float: right;">
+  <input type="submit" value="업데이트" />
+</div><br><p>
+<h3>현재 트러커 수 : <input type="number" name="car_amount" min="0" value="{{ terminal.car_amount }}" /></h3><p>
+
+<h3>혼잡도 상태</h3>
+<div style="float: left;">
+  <fieldset>
+    <legend>원활</legend>
+    <input type="number" name="easy" min="0" value="{{ terminal.easy }}" />
+  </fieldset>
+</div>
+<div style="float: left;">
+  <fieldset>
+    <legend>보통</legend>
+    <input type="number" name="normal" min="0" value="{{ terminal.normal }}" />
+  </fieldset>
+</div>
+<div style="float: left;">
+  <fieldset>
+    <legend>혼잡</legend>
+    <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
+  </fieldset>
+</div>
+</form><br><br><br><p>
+
+<h3>컨테이너 정보</h3>
+
+<table id='container-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>컨테이너번호</th>
+      <th>요청자</th>
+      <th>규격</th>
+      <th>F/M</th>
+      <th>장치위치</th>
+      <th>마지막처리일자</th>
+      <th>구분</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for container in containers%}
+      <tr>
+        <td>{{container.container_num}}</td>
+        <td>{{container.id}}</td>
+        <td>{{container.scale}}</td>
+        <td>{{container.fm}}</td>
+        <td>{{container.position}}</td>
+        <td>{{container.contain_last_time}}</td>
+        {% if container.in_out == True %}
+        <td>반입</td>
+        {% else %}
+        <td>반출</td>
+        {% endif %}
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<div id="myModal" class="modal">
+  <div class="modal-terminal">
+    <span class="close">&times;</span>
+    <form action="{{ url_for('container_update') }}" method="post">
+      <h2 id="h2_num">컨테이너 정보 입력</h2>
+      <div class="div-terminal">
+        <label for="container_num" class="modal-label">컨테이너번호</label>
+        <input type="text" id="container_num" name="container_num" readonly />
+      </div>
+      <div class="div-terminal">
+        <label for="position" class="modal-label">장치위치</label>
+        <input type="text" id="position" name="position" />
+      </div>
+      <div class="div-terminal">
+        <label for="scale" class="modal-label">규격</label>
+        <input type="text" id="scale" name="scale" />
+      </div>
+      <div class="div-terminal">
+        <label for="fm" class="modal-label">F/M</label>
+        <input type="text" id="fm" name="fm" />
+      </div>
+      <input type="submit" value="수정하기" />
+  </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready( function () {
+    $('#container-table').DataTable();
+  } );
+</script>
+
+<script>
+  var modal = document.getElementById("myModal");
+  var table =document.getElementById('container-table');
+  var rowList = table.rows; 
+  
+  var span = document.getElementsByClassName("close")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  for (i=1; i<rowList.length; i++) {
+      var row = rowList[i];
+      var tdsNum = row.childElementCount -1;
+
+      row.onclick = function(){ 
+        return function(){ 
+          var container_num = this.cells[0].innerHTML; 
+          document.getElementById('container_num').value = container_num;
+          modal.style.display = "block";
+       }
+    }(row);
+  }
+</script>  
+
+{% endblock %}

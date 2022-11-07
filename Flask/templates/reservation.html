@@ -4,13 +4,14 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js
-"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 
-<h3><li>예약 현황</li></h3>
+<h3>예약 현황</h3>
 
 <table id='reservation-table' class="uk-table uk-table-hover uk-table-striped">
     <thead>
@@ -18,6 +19,8 @@
         <th>요청 시간</th>
         <th>트러커</th>
         <th>컨테이너번호</th>
+        <th>예약시간</th>
+        <th>추천시간</th>
       </tr>
     </thead>
     <tbody>
@@ -26,12 +29,22 @@
           <td>{{reservation.request_time}}</td>
           <td>{{reservation.id}}</td>
           <td>{{reservation.container_num}}</td>
+          {% if reservation.accept_time == None %}
+            <td>x</td>
+          {% else %}
+            <td>{{reservation.accept_time}}</td>
+          {% endif %}
+          {% if reservation.suggestion == None %}
+            <td>x</td>
+          {% else %}
+            <td>{{reservation.suggestion}}</td>
+          {% endif %}
       </tr>
         {% endfor %}
     </tbody>
   </table>
 
-  <h3><li>시간대별 트러커 예약 현황</li></h3>
+  <h3>시간대별 트러커 예약 현황</h3>
 
   <table id='accept-table' class="uk-table uk-table-hover uk-table-striped">
     <thead>
@@ -52,56 +65,95 @@
     </tbody>
   </table>
   
-  <script type="text/javascript">
-      $(document).ready( function () {
-        $('#reservation-table').DataTable();
-      } );
-      $(document).ready( function () {
-        $('#accept-table').DataTable();
-      } );
-    </script>
 
-    <script>
-      var table =document.getElementById('reservation-table');
-      var rowList = table.rows; 
-      
-      for (i=1; i<rowList.length; i++) {
-          var row = rowList[i];
-          var tdsNum = row.childElementCount -1;
-    
-          row.onclick = function(){ 
-            return function(){ 
-              var id = this.cells[1].innerHTML; 
-              var url = "{{ url_for('reservation_popup') }}";
-              var name = "reservation_popup";
-              var option = "width = 500, height = 500, top = 100, left = 200, location = no"
-    
-              var form = document.createElement("form");
-              form.setAttribute("method", "post");
-              form.setAttribute("action", url);
-              form.setAttribute("target", name);
-    
-              var input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = "id";
-              input.value = id;
-              form.appendChild(input);
-    
-              document.body.appendChild(form);
-    
-              popup = window.open(url, name, option);
-              form.submit();
-              
-              document.body.removeChild(form);
-              var timer=setInterval(function(){
-                if(popup.closed) {
-                  clearInterval(timer);
-                  window.location.reload()
-                }
-              });
-           }
-        }(row)
-      }
-    </script>  
+  <div id="myModal" class="modal">
+    <div class="modal-reservation">
+      <span class="close">&times;</span>
+      <form action="{{ url_for('reservation') }}" method="post">
+        <input type="hidden" name="id" id="id" />
+        <h2 id="h2_id"></h2>
+        <table table id='suggestion-table' class="uk-table uk-table-hover uk-table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>시간</th>
+                    <th>차량수</th>
+                    <th>혼잡도</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for suggestion in suggestions %}
+                <tr>
+                    <th><input type="checkbox" name="timeList" onclick=CountChecked(this) value="{{ suggestion }}"/>
+                    <th>{{ suggestion }}</th>
+                    <th>{{ suggestions[suggestion][0] }}</th>
+                    <th>{{ suggestions[suggestion][1] }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" value="추천하기" />
+    </form>
+    </div>
+  </div>
+
+<script>
+  var maxChecked = 3;
+  var totalChecked = 0;
+  function CountChecked(field) {
+    if(field.checked)
+    totalChecked += 1;
+    else
+    totalChecked -= 1; 
+    if(totalChecked > maxChecked) {
+      alert ("최대 3개 까지만 가능합니다.");
+      field.checked = false;
+      totalChecked -= 1;
+    } 
+  }
+</script>
+
+<script type="text/javascript">
+  $(document).ready( function () {
+    $('#reservation-table').DataTable();
+  } );
+  $(document).ready( function () {
+    $('#accept-table').DataTable();
+  } );
+  $(document).ready( function () {
+    $('#suggestion-table').DataTable();
+  } );
+</script>
+
+
+<script>
+  var modal = document.getElementById("myModal");
+  var table =document.getElementById('reservation-table');
+  var rowList = table.rows; 
+  
+  var span = document.getElementsByClassName("close")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  for (i=1; i<rowList.length; i++) {
+      var row = rowList[i];
+      var tdsNum = row.childElementCount -1;
+
+      row.onclick = function(){ 
+        return function(){ 
+          var id = this.cells[1].innerHTML; 
+          document.getElementById('id').value = id;
+          document.getElementById('h2_id').innerHTML =id+' 추천시간';
+          modal.style.display = "block";
+       }
+    }(row);
+  }
+</script>  
 
 {% endblock %}
