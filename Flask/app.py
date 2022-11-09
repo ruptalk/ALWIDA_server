@@ -125,7 +125,7 @@ def signup():
             return alert("완료!")
         except:
             return alert("에러!")
-        
+
 @app.route("/signout")
 def signout():
     if not is_login():
@@ -140,23 +140,25 @@ def index():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
-        container = container_table.query.filter_by(tn=usr["tn"]).all()
+        select_tn = request.args.get("select_tn",usr["tn"])
+        terminal = terminal_table.query.filter_by(tn=select_tn).first()
+        container = container_table.query.filter_by(tn=select_tn).all()
         tns = terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
-        return render_template('terminal.html', terminal=terminal, containers=container, tns=tns, usr=usr, check=is_login())
+        return render_template('terminal.html', terminal=terminal, containers=container, select_tn=select_tn, tns=tns, usr=usr, check=is_login())
 
 @app.route("/terminal_update", methods=["POST"])
 def terminal_update():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     try:
+        usr = session.get("info")
+        select_tn = request.form.get("select_tn",usr["tn"])
         car_amount = request.form.get("car_amount")
         easy = request.form.get("easy","")
         normal = request.form.get("normal","")
         difficalt = request.form.get("difficalt","")
         
-        usr = session.get("info")
-        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
+        terminal = terminal_table.query.filter_by(tn=select_tn).first()
         
         terminal.car_amount = car_amount    
         terminal.easy = easy
