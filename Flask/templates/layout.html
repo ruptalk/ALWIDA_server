@@ -14,19 +14,24 @@
     <body class=>
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
-            <div class="border-end bg-white" id="sidebar-wrapper">
-                <div class="sidebar-heading border-bottom bg-light">ALWIDA</div>
+            <div class="border-end bg-white" id="sidebar-wrapper" >
+                <!-- <div class="sidebar-heading border-bottom bg-light">ALWIDA</div> -->
+                <div class="sidebar-heading border-bottom bg-light">
+                    <img src='{{url_for("static", filename="assets/logo.ico")}}' height="50px" width="auto">&nbsp; ALWIDA</div>
+
                 <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('index') }}">터미널 정보</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('reservation') }}">예약 요청 수락</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('receipt') }}">인수도증 발급 현황</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('cash') }}">현금 수납 상황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('check') }}">검사내역 현황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('user_info') }}">트러커 정보</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
             <div id="page-content-wrapper">
                 <!-- Top navigation-->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom", line-height="35px" >
                     <div class="container-fluid">
                         <button class="btn btn-primary" id="sidebarToggle">메뉴</button>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
