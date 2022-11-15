@@ -288,23 +288,23 @@ INSERT INTO container_table VALUES ('5555','user5','PNIT','규격5','F','장치�
 INSERT INTO reservation_table VALUES ('user5', '5555', 'PNIT',NOW(), NULL, NULL);
 
 INSERT INTO container_table VALUES ('6666','user6','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user6', '6666', 'PNIT',"2022-11-07 06:00:00", "2022-11-07 06:00:00", NULL);
+INSERT INTO reservation_table VALUES ('user6', '6666', 'PNIT',"2022-11-16 06:00:00", "2022-11-16 06:00:00", NULL);
 INSERT INTO container_table VALUES ('7777','user7','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user7', '7777', 'PNIT',"2022-11-07 06:05:00", "2022-11-07 06:05:00", NULL);
+INSERT INTO reservation_table VALUES ('user7', '7777', 'PNIT',"2022-11-16 06:05:00", "2022-11-16 06:05:00", NULL);
 INSERT INTO container_table VALUES ('8888','user8','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user8', '8888', 'PNIT',"2022-11-07 06:29:00", "2022-11-07 06:29:00", NULL);
+INSERT INTO reservation_table VALUES ('user8', '8888', 'PNIT',"2022-11-16 06:29:00", "2022-11-16 06:29:00", NULL);
 INSERT INTO container_table VALUES ('9999','user9','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user9', '9999', 'PNIT',"2022-11-07 06:30:00", "2022-11-07 06:30:00", NULL);
+INSERT INTO reservation_table VALUES ('user9', '9999', 'PNIT',"2022-11-16 06:30:00", "2022-11-16 06:30:00", NULL);
 INSERT INTO container_table VALUES ('10101010','user10','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user10', '10101010', 'PNIT',"2022-11-07 06:35:00", "2022-11-07 06:35:00", NULL);
+INSERT INTO reservation_table VALUES ('user10', '10101010', 'PNIT',"2022-11-16 06:35:00", "2022-11-16 06:35:00", NULL);
 INSERT INTO container_table VALUES ('11111111','user11','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user11', '11111111', 'PNIT',"2022-11-07 07:19:00", "2022-11-07 07:19:00", NULL);
+INSERT INTO reservation_table VALUES ('user11', '11111111', 'PNIT',"2022-11-16 07:19:00", "2022-11-16 07:19:00", NULL);
 INSERT INTO container_table VALUES ('12121212','user12','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user12', '12121212', 'PNIT',"2022-11-07 07:00:00", "2022-11-07 07:00:00", NULL);
+INSERT INTO reservation_table VALUES ('user12', '12121212', 'PNIT',"2022-11-16 07:00:00", "2022-11-16 07:00:00", NULL);
 INSERT INTO container_table VALUES ('13131313','user13','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user13', '13131313', 'PNIT',"2022-11-07 07:15:00", "2022-11-07 07:15:00", NULL);
+INSERT INTO reservation_table VALUES ('user13', '13131313', 'PNIT',"2022-11-16 07:15:00", "2022-11-16 07:15:00", NULL);
 INSERT INTO container_table VALUES ('14141414','user14','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user14', '14141414', 'PNIT',"2022-11-07 07:29:00", "2022-11-07 07:29:00", NULL);
+INSERT INTO reservation_table VALUES ('user14', '14141414', 'PNIT',"2022-11-16 07:29:00", "2022-11-16 07:29:00", NULL);
 
 INSERT INTO receipt_table VALUES ('1111','user1',0,NULL);
 INSERT INTO receipt_table VALUES ('2222','user2',0,NULL);
@@ -324,14 +324,14 @@ INSERT INTO cash_table VALUES ('user4','4444',1,NOW());
 INSERT INTO cash_table VALUES ('user5','5555',1,NOW());
 INSERT INTO cash_table VALUES ('user6','6666',0,NULL);
 
-INSERT INTO check_table VALUES('user1',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user2',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user3',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user4',NOW(),"AAAA",1);
-INSERT INTO check_table VALUES('user5',NOW(),"AAAA",2);
-INSERT INTO check_table VALUES('user6',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user7',NOW(),"AAAA",3);
-INSERT INTO check_table VALUES('user8',NOW(),"AAAA",4);
+INSERT INTO check_table VALUES('user1',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user2',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user3',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user4',NOW(),LOAD_FILE('/tmp/test.jpeg'),1);
+INSERT INTO check_table VALUES('user5',NOW(),LOAD_FILE('/tmp/test.jpeg'),2);
+INSERT INTO check_table VALUES('user6',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user7',NOW(),LOAD_FILE('/tmp/test.jpeg'),3);
+INSERT INTO check_table VALUES('user8',NOW(),LOAD_FILE('/tmp/test.jpeg'),4);
 
 INSERT INTO chatting_table VALUES('user1',0);
 INSERT INTO chatting_table VALUES('user2',1);
