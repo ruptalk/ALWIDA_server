@@ -70,7 +70,7 @@ CREATE TABLE `reservation_table` (
 CREATE TABLE `check_table` (
 	`id`	VARCHAR(20)	NOT NULL,
 	`request_time`	DATETIME	NOT NULL,
-	`Field`	LONGBLOB	NOT NULL,
+	`img`	LONGBLOB	NOT NULL,
 	`result`	INT	NOT NULL
 );
 
@@ -252,8 +252,8 @@ INSERT INTO container_table VALUES ('3333','user3','PNIT','규격3','F','장치�
 INSERT INTO reservation_table VALUES ('user3', '3333', 'PNIT',NOW(), NULL, NULL);
 INSERT INTO container_table VALUES ('4444','user4','PNIT','규격4','F','장치위치4',NOW(),1);
 INSERT INTO reservation_table VALUES ('user4', '4444', 'PNIT',NOW(), NULL, NULL);
-INSERT INTO container_table VALUES ('5555','user5','PNC','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user5', '5555', 'PNC',NOW(), NULL, NULL);
+INSERT INTO container_table VALUES ('5555','user5','PNIT','규격5','F','장치위치5',NOW(),1);
+INSERT INTO reservation_table VALUES ('user5', '5555', 'PNIT',NOW(), NULL, NULL);
 
 INSERT INTO container_table VALUES ('6666','user6','PNIT','규격5','F','장치위치5',NOW(),1);
 INSERT INTO reservation_table VALUES ('user6', '6666', 'PNIT',"2022-11-07 06:00:00", "2022-11-07 06:00:00", NULL);
@@ -291,3 +291,12 @@ INSERT INTO cash_table VALUES ('user3','3333',0,NULL);
 INSERT INTO cash_table VALUES ('user4','4444',1,NOW());
 INSERT INTO cash_table VALUES ('user5','5555',1,NOW());
 INSERT INTO cash_table VALUES ('user6','6666',0,NULL);
+
+INSERT INTO check_table VALUES('user1',NOW(),"AAAA",0);
+INSERT INTO check_table VALUES('user2',NOW(),"AAAA",0);
+INSERT INTO check_table VALUES('user3',NOW(),"AAAA",0);
+INSERT INTO check_table VALUES('user4',NOW(),"AAAA",1);
+INSERT INTO check_table VALUES('user5',NOW(),"AAAA",2);
+INSERT INTO check_table VALUES('user6',NOW(),"AAAA",0);
+INSERT INTO check_table VALUES('user7',NOW(),"AAAA",3);
+INSERT INTO check_table VALUES('user8',NOW(),"AAAA",4);

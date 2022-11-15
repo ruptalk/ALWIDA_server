@@ -11,6 +11,20 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 
+<form action="{{ url_for("reservation") }}" id="group_form" method="GET">
+  <div style="float: left;">
+    <select name="select_tn" onchange="select_submit()">
+      {% for tn in tns%}
+      {% if tn[0] == select_tn %}
+      <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+      {% else %}
+      <option value="{{tn[0]}}">{{tn[0]}}</option>
+      {% endif %}
+      {% endfor%}
+    </select>
+  </div>
+</form><br>
+
 <h3>예약 현황</h3>
 
 <table id='reservation-table' class="uk-table uk-table-hover uk-table-striped">
@@ -35,7 +49,7 @@
             <td>{{reservation.accept_time}}</td>
           {% endif %}
           {% if reservation.suggestion == None %}
-            <td>x</td>
+            <td>X</td>
           {% else %}
             <td>{{reservation.suggestion}}</td>
           {% endif %}
@@ -96,6 +110,12 @@
     </form>
     </div>
   </div>
+
+<script>
+  function select_submit(){
+    document.getElementById('group_form').submit();
+  }
+</script>
 
 <script>
   var maxChecked = 3;

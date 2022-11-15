@@ -10,38 +10,46 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 
-<form action="{{ url_for("terminal_update") }}" method="POST">
-<div style="float: left;">
-  <select name="group">
-    {% for tn in tns%}
-    <option value="{{tn[0]}}">{{tn[0]}}</option>
-    {% endfor%}
-</select>
-</div>
-<div style="float: right;">
-  <input type="submit" value="업데이트" />
-</div><br><p>
-<h3>현재 트러커 수 : <input type="number" name="car_amount" min="0" value="{{ terminal.car_amount }}" /></h3><p>
+<form action="{{ url_for("index") }}" id="group_form" method="GET">
+  <div style="float: left;">
+    <select name="select_tn" onchange="select_submit()">
+      {% for tn in tns%}
+      {% if tn[0] == select_tn %}
+      <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+      {% else %}
+      <option value="{{tn[0]}}">{{tn[0]}}</option>
+      {% endif %}
+      {% endfor%}
+    </select>
+  </div>
+</form>
 
-<h3>혼잡도 상태</h3>
-<div style="float: left;">
-  <fieldset>
-    <legend>원활</legend>
-    <input type="number" name="easy" min="0" value="{{ terminal.easy }}" />
-  </fieldset>
-</div>
-<div style="float: left;">
-  <fieldset>
-    <legend>보통</legend>
-    <input type="number" name="normal" min="0" value="{{ terminal.normal }}" />
-  </fieldset>
-</div>
-<div style="float: left;">
-  <fieldset>
-    <legend>혼잡</legend>
-    <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
-  </fieldset>
-</div>
+<form action="{{ url_for("terminal_update") }}" id="group_form" method="POST">
+  <div style="float: right;">
+    <input type="submit" value="업데이트" />
+  </div><br><p>
+  <input type="hidden" name="select_tn" value="{{ select_tn }}" />
+  <h3>현재 트러커 수 : <input type="number" name="car_amount" min="0" value="{{ terminal.car_amount }}" /></h3><p>
+
+  <h3>혼잡도 상태</h3>
+  <div style="float: left;">
+    <fieldset>
+      <legend>원활</legend>
+      <input type="number" name="easy" min="0" value="{{ terminal.easy }}" />
+    </fieldset>
+  </div>
+  <div style="float: left;">
+    <fieldset>
+      <legend>보통</legend>
+      <input type="number" name="normal" min="0" value="{{ terminal.normal }}" />
+    </fieldset>
+  </div>
+  <div style="float: left;">
+    <fieldset>
+      <legend>혼잡</legend>
+      <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
+    </fieldset>
+  </div>
 </form><br><br><br><p>
 
 <h3>컨테이너 정보</h3>
@@ -102,6 +110,12 @@
   </form>
   </div>
 </div>
+
+<script>
+  function select_submit(){
+    document.getElementById('group_form').submit();
+  }
+</script>
 
 <script type="text/javascript">
   $(document).ready( function () {

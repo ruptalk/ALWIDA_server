@@ -1,4 +1,5 @@
 import os
+import base64
 from flask import Flask, request, render_template, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, inspect
@@ -36,6 +37,17 @@ class admin_table(db.Model):
             "name" : self.name,
             "tn":self.tn
         }
+
+class user_table(db.Model):
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    pw = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
+    phone = db.Column(db.String(11), nullable=False)
+    tn = db.Column(db.String(30), nullable=False)
+    car_num = db.Column(db.String(20), nullable=False)
+    check_num = db.Column(db.String(5), nullable=False)
+    info_agree = db.Column(db.Boolean, nullable=False)
+    info_gps = db.Column(db.Boolean, nullable=False)
 
 class terminal_table(db.Model):
     tn = db.Column(db.String(30), primary_key=True, nullable=False)
@@ -75,6 +87,12 @@ class cash_table(db.Model):
     container_num = db.Column(db.String(30), nullable=False)
     publish_pay = db.Column(db.Boolean, nullable=False)
     pay_datetime = db.Column(db.DateTime, nullable=True)
+
+class check_table(db.Model):
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    request_time = db.Column(db.DateTime, nullable=False)
+    img = db.Column(db.LargeBinary, nullable=False)
+    result = db.Column(db.Integer, nullable=False)
 
 def alert(msg, loc=None):
     if loc:
@@ -125,13 +143,16 @@ def signup():
             return alert("완료!")
         except:
             return alert("에러!")
-        
+
 @app.route("/signout")
 def signout():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     del session["info"]
-    return alert("로그아웃!","/")
+    return alert("로그아웃!","/signin")
+
+def select_tn_func():
+     return terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
 
 @app.route("/")
 @app.route("/index")
@@ -140,23 +161,25 @@ def index():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
-        container = container_table.query.filter_by(tn=usr["tn"]).all()
-        tns = terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
-        return render_template('terminal.html', terminal=terminal, containers=container, tns=tns, usr=usr, check=is_login())
+        select_tn = request.args.get("select_tn",usr["tn"])
+        terminal = terminal_table.query.filter_by(tn=select_tn).first()
+        container = container_table.query.filter_by(tn=select_tn).all()
+        
+        return render_template('terminal.html', terminal=terminal, containers=container, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
 
 @app.route("/terminal_update", methods=["POST"])
 def terminal_update():
     if not is_login():
         return alert("로그인부터 해주세요!","/signin")
     try:
+        usr = session.get("info")
+        select_tn = request.form.get("select_tn",usr["tn"])
         car_amount = request.form.get("car_amount")
         easy = request.form.get("easy","")
         normal = request.form.get("normal","")
         difficalt = request.form.get("difficalt","")
         
-        usr = session.get("info")
-        terminal = terminal_table.query.filter_by(tn=usr["tn"]).first()
+        terminal = terminal_table.query.filter_by(tn=select_tn).first()
         
         terminal.car_amount = car_amount    
         terminal.easy = easy
@@ -241,13 +264,14 @@ def reservation():
         return alert("로그인부터 해주세요!","/signin")
     if(request.method=="GET"):
         usr = session.get("info")
-        reservation = reservation_table.query.filter_by(tn=usr["tn"]).all()
+        select_tn = request.args.get("select_tn",usr["tn"])
+        reservation = reservation_table.query.filter_by(tn=select_tn).all()
         
         accept = reservation_table.query.with_entities(
             reservation_table.accept_time,
             func.count(reservation_table.accept_time).label('count')
         ).filter(
-            (reservation_table.tn == usr["tn"])&
+            (reservation_table.tn == select_tn)&
             (reservation_table.accept_time != None)&
             (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
             # &(reservation_table.accept_time >= func.now())
@@ -260,7 +284,7 @@ def reservation():
             func.date_format(reservation_table.accept_time, '%H%i'),
             func.count(reservation_table.accept_time).label('count')
         ).filter(
-            (reservation_table.tn == usr["tn"])&
+            (reservation_table.tn == select_tn)&
             (reservation_table.accept_time != None)&
             (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
             # &(reservation_table.accept_time >= func.now())
@@ -278,7 +302,7 @@ def reservation():
                 acc[0] = acc[0].replace(minute=30)
             
             acc.append(congestion(acc[1]))
-        return render_template('reservation.html', reservations=reservation, suggestions=recommand(suggestion), accepts=accept_list, usr=usr, check=is_login())
+        return render_template('reservation.html', reservations=reservation, suggestions=recommand(suggestion), accepts=accept_list, usr=usr, select_tn=select_tn, tns=select_tn_func(), check=is_login())
     elif(request.method=="POST"):
         try:
             timeList = ','.join(request.form.getlist("timeList"))
@@ -334,4 +358,62 @@ def cash():
         
         return alert('발급완료!')
         
+@app.route("/check", methods=["GET","POST"])
+def check():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    if(request.method=="GET"):
+        usr = session.get("info")
+        select_tn = request.args.get("select_tn",usr["tn"])
+        check_wait = check_table.query.join(container_table, container_table.id==check_table.id)\
+                                                            .with_entities(check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
+                                                            .filter((container_table.tn==select_tn) & ((check_table.result==0) | (check_table.result==1) | (check_table.result==2))).all()
+                                                                       
+        check_result = check_table.query.join(container_table, container_table.id==check_table.id)\
+                                                            .with_entities(check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
+                                                            .filter((container_table.tn==select_tn) & ((check_table.result==3) | (check_table.result==4))).all()
+        
+        check_wait = [list(x) for x in check_wait]
+        
+        for data in check_wait:
+            data[2] = base64.b64encode(data[2])
+            data[2] = data[2].decode() 
+        
+        return render_template('check.html', check_waits=check_wait,check_results=check_result, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+    elif(request.method=="POST"):
+        id = request.form.get("id")
+        type = request.form.get("type")
+        
+        check = check_table.query.filter(check_table.id==id).first()
+        if(type=="pass"):
+            check.result=3
+        elif(type=="fail"):
+            check.result=4
+        elif(type=="hold"):
+            check.result=2
+        else:
+            return alert("에러!")
+        
+        db.session.commit()
+        
+        return alert("완료!")
+        
+@app.route("/user_info", methods=["GET"])
+def user_info():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    if(request.method=="GET"):
+        usr = session.get("info")
+        select_tn = request.args.get("select_tn",usr["tn"])
+        date = request.args.get("date",datetime.now().date())
+        
+        user = user_table.query.filter_by(tn=select_tn).all()
+        
+        reservation = reservation_table.query.join(user_table, reservation_table.id==user_table.id)\
+                                                            .with_entities(reservation_table.accept_time, user_table.id, user_table.car_num, reservation_table.container_num, user_table.phone)\
+                                                            .filter((reservation_table.tn==select_tn) & (reservation_table.accept_time != None) & (reservation_table.accept_time > date)).all()
+        
+        return render_template('user_info.html', users=user, reservations=reservation, date=date, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+    
+
 app.run(host="0.0.0.0", port=8888)

@@ -1,0 +1,186 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+
+<form action="{{ url_for("check") }}" id="group_form" method="GET">
+  <div style="float: left;">
+    <select name="select_tn" onchange="select_submit()">
+      {% for tn in tns%}
+      {% if tn[0] == select_tn %}
+      <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+      {% else %}
+      <option value="{{tn[0]}}">{{tn[0]}}</option>
+      {% endif %}
+      {% endfor%}
+    </select>
+  </div>
+</form><br><br>
+
+<h3>미응답 보류 결함 요청 알림</h3>
+
+<table id='check-wait-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>일시</th>
+      <th>트러커</th>
+      <th>터미널 약칭</th>
+      <th>컨테이너번호</th>
+      <th>결과</th>
+      <th style="display:none;"></th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for check_wait in check_waits%}
+      <tr>
+        <td>{{check_wait[1]}}</td>
+        <td>{{check_wait[0]}}</td>
+        <td>{{check_wait[5]}}</td>
+        <td>{{check_wait[4]}}</td>
+        {% if check_wait[3] == 0 %}
+        <td>수신대기</td>
+        {% elif check_wait[3] == 1 %}
+        <td>수신완료</td>
+        {% else %}
+        <td>보류</td>
+        {% endif %}
+        <td style="display:none;">{{check_wait[2]}}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<h3>결함 처리 기록</h3>
+
+<table id='check-result-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>일시</th>
+      <th>트러커</th>
+      <th>터미널 약칭</th>
+      <th>컨테이너번호</th>
+      <th>결과</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for check_result in check_results %}
+      <tr>
+        <td>{{check_result.request_time}}</td>
+        <td>{{check_result.id}}</td>
+        <td>{{check_result.tn}}</td>
+        <td>{{check_result.container_num}}</td>
+        {% if check_result.result == 3 %}
+        <td>검사합격</td>
+        {% else %}
+        <td>검사불합격</td>
+        {% endif %}
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+  
+<div id="myModal" class="modal">
+  <div class="modal-check">
+    <span class="close">&times;</span>
+    <form action="{{ url_for('check') }}" id="check-form" method="post">
+      <input type="hidden" name="id" id="id" />
+      <div style=" height: 20%;width: 100%;"><h2 id="h2_num"></h2></div>
+      <div style=" height: 70%;width: 100%;"><img id="img"></div>
+      <div style=" height: 10%;width: 100%;">
+        <div style="float: left; width: 33%;"><button onclick="pass()" class="check-btn" >검사합격</button></div>
+        <div style="float: left; width: 33%;"><button onclick="fail()" class="check-btn" >검사불합격</button></div>
+        <div style="float: left; width: 33%;"><button onclick="hold()" class="check-btn" >보류</button></div>
+      </div>
+  </form>
+  </div>
+</div>
+  
+<script>
+  function select_submit(){
+    document.getElementById('group_form').submit();
+  }
+</script>
+<script>
+  function pass() {
+    var check_form = document.getElementById("check-form");
+    var data = document.createElement("input");
+    data.setAttribute("type","hidden");
+    data.setAttribute("name","type");
+    data.setAttribute("value","pass");
+
+    check_form.appendChild(data);
+    check_form.submit();
+  }
+  function fail() {
+    var check_form = document.getElementById("check-form");
+    var data = document.createElement("input");
+    data.setAttribute("type","hidden");
+    data.setAttribute("name","type");
+    data.setAttribute("value","fail");
+
+    check_form.appendChild(data);
+    check_form.submit();
+  }
+  function hold() {
+    var check_form = document.getElementById("check-form");
+    var data = document.createElement("input");
+    data.setAttribute("type","hidden");
+    data.setAttribute("name","type");
+    data.setAttribute("value","hold");
+
+    check_form.appendChild(data);
+    check_form.submit();
+  }
+</script>
+
+<script type="text/javascript">
+  $(document).ready( function () {
+    $('#check-wait-table').DataTable();
+  } );
+  $(document).ready( function () {
+    $('#check-result-table').DataTable();
+  } );
+</script>
+
+<script>
+  var modal = document.getElementById("myModal");
+  var table =document.getElementById('check-wait-table');
+  var rowList = table.rows; 
+
+  var span = document.getElementsByClassName("close")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  
+  for (i=1; i<rowList.length; i++) {
+      var row = rowList[i];
+      var tdsNum = row.childElementCount -1;
+
+      row.onclick = function(){ 
+        return function(){ 
+          var id = this.cells[1].innerHTML;
+          var container_num = this.cells[3].innerHTML;
+          var img = this.cells[5].innerHTML;
+
+          document.getElementById("id").value = id;
+          document.getElementById('h2_num').innerHTML = "컨테이너 번호 : " + container_num;
+          document.getElementById('img').src = "data:image/png;base64," + img;
+          modal.style.display = "block";
+       }
+    }(row);
+  }
+</script>  
+
+{% endblock %}

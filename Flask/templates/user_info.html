@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+
+<form action="{{ url_for("user_info") }}" id="group_form" method="GET">
+    <div style="float: left;">
+      <select name="select_tn" onchange="select_submit()">
+        {% for tn in tns%}
+        {% if tn[0] == select_tn %}
+        <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+        {% else %}
+        <option value="{{tn[0]}}">{{tn[0]}}</option>
+        {% endif %}
+        {% endfor%}
+      </select>
+    </div>
+  </form><br><br>
+
+<h3>등록된 트러커 리스트</h3>
+
+<table id='user-info-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>트러커</th>
+      <th>휴대폰번호</th>
+      <th>차량번호</th>
+      <th>인증값</th>
+      <th>개인정보 동의</th>
+      <th>위치정보 동의</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for user in users%}
+      <tr>
+        <td>{{user.id}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.car_num}}</td>
+        <td>{{user.check_num}}</td>
+        {% if user.info_agree %}
+        <td>O</td>
+        {% else %}
+        <td>X</td>
+        {% endif %}
+        {% if user.info_gps %}
+        <td>O</td>
+        {% else %}
+        <td>X</td>
+        {% endif %}
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<h3>방문 트러커</h3>
+
+<form action="{{ url_for("user_info") }}" id="date_form" method="GET">
+  <input type="date" name="date" onchange="date_submit()" value="{{date}}">
+</form><br>
+
+<table id='user-visit-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>일시</th>
+      <th>트러커</th>
+      <th>차량번호</th>
+      <th>컨테이너번호</th>
+      <th>휴대폰 번호</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for reservation in reservations%}
+      <tr>
+        <td>{{reservation.accept_time}}</td>
+        <td>{{reservation.id}}</td>
+        <td>{{reservation.car_num}}</td>
+        <td>{{reservation.container_num}}</td>
+        <td>{{reservation.phone}}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+  
+<div id="myModal" class="modal">
+  <div class="modal-receipt">
+    <span class="close">&times;</span>
+    <form action="{{ url_for('receipt') }}" method="post">
+      <input type="hidden" id="id" name="id" />
+      <input type="hidden" id="container_num" name="container_num" />
+      <h2 id="h2_num">인수도증 발급</h2>
+      <h4 id="h4_comment"></h3>
+      <input type="submit" value="확인" />
+  </form>
+  </div>
+</div>
+
+<script>
+  function select_submit(){
+    document.getElementById('group_form').submit();
+  }
+    function date_submit(){
+      document.getElementById('date_form').submit();
+    }
+</script>
+
+<script type="text/javascript">
+  $(document).ready( function () {
+    $('#user-info-table').DataTable();
+  } );
+  $(document).ready( function () {
+    $('#user-visit-table').DataTable();
+  } );
+</script>
+
+{% endblock %}
