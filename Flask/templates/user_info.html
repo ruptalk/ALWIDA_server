@@ -24,6 +24,8 @@
     </div>
   </form><br><br>
 
+<h3>등록된 트러커 리스트</h3>
+
 <table id='user-info-table' class="uk-table uk-table-hover uk-table-striped">
   <thead>
     <tr>
@@ -56,6 +58,12 @@
       {% endfor %}
   </tbody>
 </table>
+
+<h3>방문 트러커</h3>
+
+<form action="{{ url_for("user_info") }}" id="date_form" method="GET">
+  <input type="date" name="date" onchange="date_submit()" value="{{date}}">
+</form><br>
 
 <table id='user-visit-table' class="uk-table uk-table-hover uk-table-striped">
   <thead>
@@ -92,49 +100,23 @@
   </form>
   </div>
 </div>
-  
+
 <script>
   function select_submit(){
     document.getElementById('group_form').submit();
   }
+    function date_submit(){
+      document.getElementById('date_form').submit();
+    }
 </script>
 
 <script type="text/javascript">
   $(document).ready( function () {
     $('#user-info-table').DataTable();
   } );
+  $(document).ready( function () {
+    $('#user-visit-table').DataTable();
+  } );
 </script>
-<script>
-  var modal = document.getElementById("myModal");
-  var table =document.getElementById('user-info-table');
-  var rowList = table.rows; 
-
-  var span = document.getElementsByClassName("close")[0];
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-  
-  for (i=1; i<rowList.length; i++) {
-      var row = rowList[i];
-      var tdsNum = row.childElementCount -1;
-
-      row.onclick = function(){ 
-        return function(){ 
-          var container_num = this.cells[0].innerHTML; 
-          var id = this.cells[1].innerHTML;
-
-          document.getElementById('id').value = id;
-          document.getElementById('container_num').value = container_num;
-          document.getElementById('h4_comment').innerHTML = '<font color=#221A76>'+id+'</font>님이 요청하신 컨테이너 <font color=#221A76>'+container_num+'</font> 인수도증을 발급하시겠습니까?';
-          modal.style.display = "block";
-       }
-    }(row);
-  }
-</script>  
 
 {% endblock %}

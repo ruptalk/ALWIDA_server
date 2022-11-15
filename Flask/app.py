@@ -405,13 +405,15 @@ def user_info():
     if(request.method=="GET"):
         usr = session.get("info")
         select_tn = request.args.get("select_tn",usr["tn"])
+        date = request.args.get("date",datetime.now().date())
+        
         user = user_table.query.filter_by(tn=select_tn).all()
         
         reservation = reservation_table.query.join(user_table, reservation_table.id==user_table.id)\
                                                             .with_entities(reservation_table.accept_time, user_table.id, user_table.car_num, reservation_table.container_num, user_table.phone)\
-                                                            .filter(reservation_table.tn==select_tn).all()
+                                                            .filter((reservation_table.tn==select_tn) & (reservation_table.accept_time != None) & (reservation_table.accept_time > date)).all()
         
-        return render_template('user_info.html', users=user, reservations=reservation, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+        return render_template('user_info.html', users=user, reservations=reservation, date=date, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
     
 
 app.run(host="0.0.0.0", port=8888)
