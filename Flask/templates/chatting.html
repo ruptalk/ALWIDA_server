@@ -1,0 +1,249 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+
+<form action="{{ url_for("chatting") }}" id="group_form" method="GET">
+  <div style="float: left;">
+    <select name="select_tn" onchange="select_submit()">
+      {% for tn in tns%}
+      {% if tn[0] == select_tn %}
+      <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+      {% else %}
+      <option value="{{tn[0]}}">{{tn[0]}}</option>
+      {% endif %}
+      {% endfor%}
+    </select>
+  </div>
+</form><br><br>
+
+<h3>방문 트러커 현황 알림</h3>
+
+<table id='chatting-table' class="uk-table uk-table-hover uk-table-striped">
+  <thead>
+    <tr>
+      <th>구분</th>
+      <th>트러커</th>
+      <th>차량번호</th>
+      <th>컨테이너번호</th>
+      <th style="display:none;"></th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for chatting in chattings%}
+      <tr>
+        {% if chatting[0] == 0 %}
+        <td>예약대기</td>
+        {% elif chatting[0] == 1%}
+        <td>출발</td>
+        {% elif chatting[0] == 2%}
+        <td>예약 준수 구간 통과</td>
+        {% elif chatting[0] == 3%}
+        <td>예약 변경</td>
+        {% elif chatting[0] == 4%}
+        <td>출발 취소 요청</td>
+        {% elif chatting[0] == 5%}
+        <td>게이트 진입 요청</td>
+        {% elif chatting[0] == 6%}
+        <td>요청1(부두내 차량수)</td>
+        {% elif chatting[0] == 7%}
+        <td>요청2(터미널 혼잡도)</td>
+        {% endif %}
+        <td>{{chatting[1]}}</td>
+        <td>{{chatting[2]}}</td>
+        <td>{{chatting[3]}}</td>
+        <td style="display:none;">{{chatting[4]}}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<iframe id="iframe1" name="iframe1" style="display:none"></iframe>
+
+<div id="myModal" class="modal">
+  <div class="modal-chatting">
+    <div class="div-chatting-head">
+      <div>
+        <span class="close-chatting">&times;</span>
+        <h3 id="h3_id"></h3>
+      </div>
+    </div>
+    <div id="chatting-body" class="div-chatting-body">
+      <div id="chat_wrap" class="chat_wrap">
+        <div id="chat-inner" class="inner">
+        </div>
+      </div>
+    </div>
+    <div class="div-chatting-send">
+      <form action="{{ url_for("chatting") }}" id="send_form" method="POST" target="iframe1">
+        <input type="hidden" name="id" id="id"/>
+        <div style="float:left;width:80%;">
+          <textarea cols="70" rows="1" name="send_text" id="send_text" oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"' style="widht:100%;resize: none; padding: 8px; margin: 20px;max-height: 100px;"></textarea>
+        </div>
+        <div style="float:left;width:20%;">
+          <button class="chatting-btn" onclick="create_submit()">전송</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function select_submit(){
+    document.getElementById('group_form').submit();
+  }
+</script>
+
+<script type="text/javascript">
+  $(document).ready( function () {
+    $('#chatting-table').DataTable();
+  } );
+</script>
+
+<script>
+  function strToArray(str) {
+    str = str.replace(/[\[\]']+/g, '');
+    var array = [];
+    var array2 = [];
+    array = str.split(',');
+    
+    for (var i = 0; i < array.length; i++) {
+      array[i] = array[i].trim();
+    }
+    
+    // 1차원 array -> 2차원 array
+      while (array.length > 0) {
+        array2.push(array.splice(0, 3));
+      }
+    
+    return array2;
+  }
+  function create_submit(){
+    var chat_inner = document.getElementById("chat-inner");
+    var send_text = document.getElementById("send_text");
+    var send_form = document.getElementById("send_form");
+
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    var hours = ('0' + today.getHours()).slice(-2); 
+    var minutes = ('0' + today.getMinutes()).slice(-2);
+    var seconds = ('0' + today.getSeconds()).slice(-2); 
+    
+    var dateString = year + '-' + month  + '-' + day + ' '+ hours + ':' + minutes  + ':' + seconds;;
+
+    var item =  document.createElement("div");
+    item.setAttribute("class","item mymsg");
+
+    var box = document.createElement("div");
+    box.setAttribute("class","box");
+
+    var new_msg = document.createElement("p");
+    new_msg.setAttribute("class","msg");
+    new_msg.innerHTML = send_text.value;
+
+    var time = document.createElement("span");
+    time.setAttribute("class", "time");
+    time.innerHTML = dateString;
+
+    box.appendChild(new_msg);
+    box.appendChild(time);
+    item.appendChild(box);
+
+    chat_inner.appendChild(item);
+    send_form.submit();
+  }
+</script>
+
+<script>
+  var modal = document.getElementById("myModal");
+  var table =document.getElementById('chatting-table');
+  var rowList = table.rows; 
+
+  var span = document.getElementsByClassName("close-chatting")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  
+  for (i=1; i<rowList.length; i++) {
+      var row = rowList[i];
+      var tdsNum = row.childElementCount -1;
+
+      row.onclick = function(){ 
+        return function(){ 
+          var id = this.cells[1].innerHTML;
+          var msgs = this.cells[4].innerHTML;
+          msgs = strToArray(msgs);
+
+          var chat_inner = document.getElementById("chat-inner");
+          while(chat_inner.firstChild)  {
+            chat_inner.removeChild(chat_inner.firstChild);
+          }
+
+          msgs.forEach(function(msg) {
+            if(msg[2]=="True"){
+              var item =  document.createElement("div");
+              item.setAttribute("class","item");
+
+              var box = document.createElement("div");
+              box.setAttribute("class","box");
+
+              var new_msg = document.createElement("p");
+              new_msg.setAttribute("class","msg");
+              new_msg.innerHTML = msg[0];
+
+              var time = document.createElement("span");
+              time.setAttribute("class", "time");
+              time.innerHTML = msg[1];
+
+              box.appendChild(new_msg);
+              box.appendChild(time);
+              item.appendChild(box);
+
+              chat_inner.appendChild(item);
+            }
+            else {
+              var item =  document.createElement("div");
+              item.setAttribute("class","item mymsg");
+
+              var box = document.createElement("div");
+              box.setAttribute("class","box");
+
+              var new_msg = document.createElement("p");
+              new_msg.setAttribute("class","msg");
+              new_msg.innerHTML = msg[0];
+
+              var time = document.createElement("span");
+              time.setAttribute("class", "time");
+              time.innerHTML = msg[1];
+
+              box.appendChild(new_msg);
+              box.appendChild(time);
+              item.appendChild(box);
+
+              chat_inner.appendChild(item);
+            }
+          });
+          document.getElementById("id").value=id;
+          document.getElementById("h3_id").innerHTML = "&nbsp; &nbsp; &nbsp; &nbsp;"+id+" 트러커님";
+          modal.style.display = "block";
+       }
+    }(row);
+  }
+</script>  
+
+{% endblock %}

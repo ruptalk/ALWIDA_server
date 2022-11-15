@@ -94,6 +94,18 @@ class check_table(db.Model):
     img = db.Column(db.LargeBinary, nullable=False)
     result = db.Column(db.Integer, nullable=False)
 
+class chatting_table(db.Model):
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    state = db.Column(db.Integer, nullable=False)
+    
+class message_table(db.Model):
+    idx = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(20), nullable=False)
+    message = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    sender = db.Column(db.Boolean, nullable=False)
+    
+
 def alert(msg, loc=None):
     if loc:
         return f'<script>alert("{msg}");location.href="{loc}";</script>'
@@ -414,6 +426,40 @@ def user_info():
                                                             .filter((reservation_table.tn==select_tn) & (reservation_table.accept_time != None) & (reservation_table.accept_time > date)).all()
         
         return render_template('user_info.html', users=user, reservations=reservation, date=date, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+    
+@app.route("/chatting", methods=["GET","POST"])
+def chatting():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    if(request.method=="GET"):
+        usr = session.get("info")
+        select_tn = request.args.get("select_tn",usr["tn"])
+        chatting = chatting_table.query.join(reservation_table, reservation_table.id==chatting_table.id)\
+                                                            .outerjoin(user_table, user_table.id == chatting_table.id)\
+                                                            .with_entities(chatting_table.state, chatting_table.id, user_table.car_num, reservation_table.container_num)\
+                                                            .filter(reservation_table.tn==select_tn).all()
+        message = message_table.query.filter().order_by(message_table.time).all()
+        
+        chatting = [list(x) for x in chatting]
+        
+        for chat in chatting:
+            id = chat[1]
+            msgs = []
+            for msg in message:
+                if(msg.id == id):
+                    msgs.append([msg.message,msg.time.strftime("%Y-%m-%d %H:%M:%S"),msg.sender])
+            chat.append(msgs)
+
+        return  render_template('chatting.html', chattings=chatting, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+    elif(request.method=="POST"):
+        id = request.form.get("id")
+        text = request.form.get("send_text")
+        
+        msg = message_table(id=id, message=text, time=datetime.now(), sender=False)
+        db.session.add(msg)
+        db.session.commit()
+        
+        return alert("완료!")
     
 
 app.run(host="0.0.0.0", port=8888)

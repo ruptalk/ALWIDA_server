@@ -74,6 +74,20 @@ CREATE TABLE `check_table` (
 	`result`	INT	NOT NULL
 );
 
+CREATE TABLE `chatting_table` (
+	`id`	VARCHAR(20)	NOT NULL,
+	`state`	INT	NOT NULL
+);
+
+CREATE TABLE `message_table` (
+	`idx`	INT AUTO_INCREMENT	NOT NULL,
+	`id`	VARCHAR(20)	NOT NULL,
+	`message`	VARCHAR(100)	NOT NULL,
+	`time`	DATETIME	NOT NULL,
+	`sender`	BOOLEAN	NOT NULL,
+	PRIMARY KEY(`idx`)
+);
+
 ALTER TABLE `user_table` ADD CONSTRAINT `PK_USER_TABLE` PRIMARY KEY (
 	`id`
 );
@@ -103,6 +117,10 @@ ALTER TABLE `reservation_table` ADD CONSTRAINT `PK_RESERVATION_TABLE` PRIMARY KE
 );
 
 ALTER TABLE `check_table` ADD CONSTRAINT `PK_CHECK_TABLE` PRIMARY KEY (
+	`id`
+);
+
+ALTER TABLE `chatting_table` ADD CONSTRAINT `PK_CHATTING_TABLE` PRIMARY KEY (
 	`id`
 );
 
@@ -190,6 +208,20 @@ REFERENCES `user_table` (
 	`id`
 );
 
+ALTER TABLE `chatting_table` ADD CONSTRAINT `FK_user_table_TO_chatting_table_1` FOREIGN KEY (
+	`id`
+)
+REFERENCES `user_table` (
+	`id`
+);
+
+ALTER TABLE `message_table` ADD CONSTRAINT `FK_chatting_table_TO_message_table_1` FOREIGN KEY (
+	`id`
+)
+REFERENCES `chatting_table` (
+	`id`
+);
+
 -- insert terminal
 INSERT INTO terminal_table VALUES ('PNIT','국제신항','부산신항',0,0,0,0);
 INSERT INTO terminal_table VALUES ('PNC','부산신항','부산신항',0,0,0,0);
@@ -256,23 +288,23 @@ INSERT INTO container_table VALUES ('5555','user5','PNIT','규격5','F','장치�
 INSERT INTO reservation_table VALUES ('user5', '5555', 'PNIT',NOW(), NULL, NULL);
 
 INSERT INTO container_table VALUES ('6666','user6','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user6', '6666', 'PNIT',"2022-11-07 06:00:00", "2022-11-07 06:00:00", NULL);
+INSERT INTO reservation_table VALUES ('user6', '6666', 'PNIT',"2022-11-16 06:00:00", "2022-11-16 06:00:00", NULL);
 INSERT INTO container_table VALUES ('7777','user7','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user7', '7777', 'PNIT',"2022-11-07 06:05:00", "2022-11-07 06:05:00", NULL);
+INSERT INTO reservation_table VALUES ('user7', '7777', 'PNIT',"2022-11-16 06:05:00", "2022-11-16 06:05:00", NULL);
 INSERT INTO container_table VALUES ('8888','user8','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user8', '8888', 'PNIT',"2022-11-07 06:29:00", "2022-11-07 06:29:00", NULL);
+INSERT INTO reservation_table VALUES ('user8', '8888', 'PNIT',"2022-11-16 06:29:00", "2022-11-16 06:29:00", NULL);
 INSERT INTO container_table VALUES ('9999','user9','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user9', '9999', 'PNIT',"2022-11-07 06:30:00", "2022-11-07 06:30:00", NULL);
+INSERT INTO reservation_table VALUES ('user9', '9999', 'PNIT',"2022-11-16 06:30:00", "2022-11-16 06:30:00", NULL);
 INSERT INTO container_table VALUES ('10101010','user10','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user10', '10101010', 'PNIT',"2022-11-07 06:35:00", "2022-11-07 06:35:00", NULL);
+INSERT INTO reservation_table VALUES ('user10', '10101010', 'PNIT',"2022-11-16 06:35:00", "2022-11-16 06:35:00", NULL);
 INSERT INTO container_table VALUES ('11111111','user11','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user11', '11111111', 'PNIT',"2022-11-07 07:19:00", "2022-11-07 07:19:00", NULL);
+INSERT INTO reservation_table VALUES ('user11', '11111111', 'PNIT',"2022-11-16 07:19:00", "2022-11-16 07:19:00", NULL);
 INSERT INTO container_table VALUES ('12121212','user12','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user12', '12121212', 'PNIT',"2022-11-07 07:00:00", "2022-11-07 07:00:00", NULL);
+INSERT INTO reservation_table VALUES ('user12', '12121212', 'PNIT',"2022-11-16 07:00:00", "2022-11-16 07:00:00", NULL);
 INSERT INTO container_table VALUES ('13131313','user13','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user13', '13131313', 'PNIT',"2022-11-07 07:15:00", "2022-11-07 07:15:00", NULL);
+INSERT INTO reservation_table VALUES ('user13', '13131313', 'PNIT',"2022-11-16 07:15:00", "2022-11-16 07:15:00", NULL);
 INSERT INTO container_table VALUES ('14141414','user14','PNIT','규격5','F','장치위치5',NOW(),1);
-INSERT INTO reservation_table VALUES ('user14', '14141414', 'PNIT',"2022-11-07 07:29:00", "2022-11-07 07:29:00", NULL);
+INSERT INTO reservation_table VALUES ('user14', '14141414', 'PNIT',"2022-11-16 07:29:00", "2022-11-16 07:29:00", NULL);
 
 INSERT INTO receipt_table VALUES ('1111','user1',0,NULL);
 INSERT INTO receipt_table VALUES ('2222','user2',0,NULL);
@@ -292,11 +324,31 @@ INSERT INTO cash_table VALUES ('user4','4444',1,NOW());
 INSERT INTO cash_table VALUES ('user5','5555',1,NOW());
 INSERT INTO cash_table VALUES ('user6','6666',0,NULL);
 
-INSERT INTO check_table VALUES('user1',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user2',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user3',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user4',NOW(),"AAAA",1);
-INSERT INTO check_table VALUES('user5',NOW(),"AAAA",2);
-INSERT INTO check_table VALUES('user6',NOW(),"AAAA",0);
-INSERT INTO check_table VALUES('user7',NOW(),"AAAA",3);
-INSERT INTO check_table VALUES('user8',NOW(),"AAAA",4);
+INSERT INTO check_table VALUES('user1',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user2',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user3',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user4',NOW(),LOAD_FILE('/tmp/test.jpeg'),1);
+INSERT INTO check_table VALUES('user5',NOW(),LOAD_FILE('/tmp/test.jpeg'),2);
+INSERT INTO check_table VALUES('user6',NOW(),LOAD_FILE('/tmp/test.jpeg'),0);
+INSERT INTO check_table VALUES('user7',NOW(),LOAD_FILE('/tmp/test.jpeg'),3);
+INSERT INTO check_table VALUES('user8',NOW(),LOAD_FILE('/tmp/test.jpeg'),4);
+
+INSERT INTO chatting_table VALUES('user1',0);
+INSERT INTO chatting_table VALUES('user2',1);
+INSERT INTO chatting_table VALUES('user3',2);
+INSERT INTO chatting_table VALUES('user4',3);
+INSERT INTO chatting_table VALUES('user5',4);
+INSERT INTO chatting_table VALUES('user6',5);
+INSERT INTO chatting_table VALUES('user7',6);
+INSERT INTO chatting_table VALUES('user8',7);
+
+
+INSERT INTO message_table VALUES (NULL, 'user2','예약이 확정되었습니다.\n 예약시간 : 1111-11-11','2022-11-15 09:00:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user2','운송시작\n 도착예정시간 : 1111-11-11','2022-11-15 09:05:00', 0);
+
+INSERT INTO message_table VALUES (NULL, 'user3','예약이 확정되었습니다. 예약시간 : 2222-11-11','2022-11-15 09:10:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user3','운송시작\n 도착예정시간 : 2222-11-11','2022-11-15 09:15:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user3','예약 준수 구간 통과','2022-11-15 09:25:00', 0);
+
+INSERT INTO message_table VALUES (NULL, 'user7','부두내 차량 수를 알려주세요.','2022-11-15 09:15:00', 1);
+INSERT INTO message_table VALUES (NULL, 'user8','목적지 혼잡도를 알려주세요.','2022-11-15 09:15:00', 1);

@@ -17,7 +17,7 @@
             <div class="border-end bg-white" id="sidebar-wrapper" >
                 <!-- <div class="sidebar-heading border-bottom bg-light">ALWIDA</div> -->
                 <div class="sidebar-heading border-bottom bg-light">
-                    <img src='{{url_for("static", filename="assets/logo.ico")}}' height="50px" width="auto" style="position:fixed;">&nbsp; ALWIDA</div>
+                    <img src='{{url_for("static", filename="assets/logo.ico")}}' style="height:50px !important; width:auto !important">&nbsp; ALWIDA</div>
 
                 <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('index') }}">터미널 정보</a>
@@ -26,6 +26,7 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('cash') }}">현금 수납 상황</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('check') }}">검사내역 현황</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('user_info') }}">트러커 정보</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('chatting') }}">채팅</a>
                 </div>
             </div>
             <!-- Page content wrapper-->

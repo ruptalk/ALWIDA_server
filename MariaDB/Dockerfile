@@ -7,6 +7,7 @@ ENV MYSQL_PASSWORD=alwida
 
 COPY my.cnf /etc/mysql/my.cnf
 COPY init.sql /docker-entrypoint-initdb.d
+COPY test.jpeg /tmp/test.jpeg
 
 EXPOSE 3306 
 
