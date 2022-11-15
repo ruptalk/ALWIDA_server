@@ -74,6 +74,20 @@ CREATE TABLE `check_table` (
 	`result`	INT	NOT NULL
 );
 
+CREATE TABLE `chatting_table` (
+	`id`	VARCHAR(20)	NOT NULL,
+	`state`	INT	NOT NULL
+);
+
+CREATE TABLE `message_table` (
+	`idx`	INT AUTO_INCREMENT	NOT NULL,
+	`id`	VARCHAR(20)	NOT NULL,
+	`message`	VARCHAR(100)	NOT NULL,
+	`time`	DATETIME	NOT NULL,
+	`sender`	BOOLEAN	NOT NULL,
+	PRIMARY KEY(`idx`)
+);
+
 ALTER TABLE `user_table` ADD CONSTRAINT `PK_USER_TABLE` PRIMARY KEY (
 	`id`
 );
@@ -103,6 +117,10 @@ ALTER TABLE `reservation_table` ADD CONSTRAINT `PK_RESERVATION_TABLE` PRIMARY KE
 );
 
 ALTER TABLE `check_table` ADD CONSTRAINT `PK_CHECK_TABLE` PRIMARY KEY (
+	`id`
+);
+
+ALTER TABLE `chatting_table` ADD CONSTRAINT `PK_CHATTING_TABLE` PRIMARY KEY (
 	`id`
 );
 
@@ -187,6 +205,20 @@ ALTER TABLE `check_table` ADD CONSTRAINT `FK_user_table_TO_check_table_1` FOREIG
 	`id`
 )
 REFERENCES `user_table` (
+	`id`
+);
+
+ALTER TABLE `chatting_table` ADD CONSTRAINT `FK_user_table_TO_chatting_table_1` FOREIGN KEY (
+	`id`
+)
+REFERENCES `user_table` (
+	`id`
+);
+
+ALTER TABLE `message_table` ADD CONSTRAINT `FK_chatting_table_TO_message_table_1` FOREIGN KEY (
+	`id`
+)
+REFERENCES `chatting_table` (
 	`id`
 );
 
@@ -300,3 +332,23 @@ INSERT INTO check_table VALUES('user5',NOW(),"AAAA",2);
 INSERT INTO check_table VALUES('user6',NOW(),"AAAA",0);
 INSERT INTO check_table VALUES('user7',NOW(),"AAAA",3);
 INSERT INTO check_table VALUES('user8',NOW(),"AAAA",4);
+
+INSERT INTO chatting_table VALUES('user1',0);
+INSERT INTO chatting_table VALUES('user2',1);
+INSERT INTO chatting_table VALUES('user3',2);
+INSERT INTO chatting_table VALUES('user4',3);
+INSERT INTO chatting_table VALUES('user5',4);
+INSERT INTO chatting_table VALUES('user6',5);
+INSERT INTO chatting_table VALUES('user7',6);
+INSERT INTO chatting_table VALUES('user8',7);
+
+
+INSERT INTO message_table VALUES (NULL, 'user2','예약이 확정되었습니다.\n 예약시간 : 1111-11-11','2022-11-15 09:00:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user2','운송시작\n 도착예정시간 : 1111-11-11','2022-11-15 09:05:00', 0);
+
+INSERT INTO message_table VALUES (NULL, 'user3','예약이 확정되었습니다. 예약시간 : 2222-11-11','2022-11-15 09:10:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user3','운송시작\n 도착예정시간 : 2222-11-11','2022-11-15 09:15:00', 0);
+INSERT INTO message_table VALUES (NULL, 'user3','예약 준수 구간 통과','2022-11-15 09:25:00', 0);
+
+INSERT INTO message_table VALUES (NULL, 'user7','부두내 차량 수를 알려주세요.','2022-11-15 09:15:00', 1);
+INSERT INTO message_table VALUES (NULL, 'user8','목적지 혼잡도를 알려주세요.','2022-11-15 09:15:00', 1);
