@@ -1,18 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
-<form action="{{ url_for("index") }}" id="group_form" method="GET">
+<form action="{{ url_for("index") }}" method="GET">
   <div style="float: left;">
-    <select name="select_tn" onchange="select_submit()">
+    <select name="select_tn" onchange="this.form.submit()">
       {% for tn in tns%}
       {% if tn[0] == select_tn %}
       <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
@@ -24,7 +20,7 @@
   </div>
 </form>
 
-<form action="{{ url_for("terminal_update") }}" id="group_form" method="POST">
+<form action="{{ url_for("terminal_update") }}" method="POST">
   <div style="float: right;">
     <input type="submit" value="업데이트" />
   </div><br><p>
@@ -54,7 +50,37 @@
 
 <h3>컨테이너 정보</h3>
 
-<table id='container-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='container-table'>
+  <form action="{{ url_for("index") }}" method="GET">
+    <div style="float:left;">
+      <select name="status" onchange="this.form.submit()">
+        {% if status=="모두" %}
+        <option value="모두" selected>모두</option>
+        <option value="반입">반입</option>
+        <option value="반출">반출</option>
+        {% elif status=="반입" %}
+        <option value="모두">모두</option>
+        <option value="반입" selected>반입</option>
+        <option value="반출">반출</option>
+        {% else %}
+        <option value="모두">모두</option>
+        <option value="반입">반입</option>
+        <option value="반출" selected>반출</option>
+        {% endif %}
+      </select>
+    </div>
+  </form>
+  <form action="" id="setRows">
+    <div style="float:right;">
+      Show
+      <select name="rowPerPage" onchange="select_row()">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+      entries
+    </div>
+  </form>
   <thead>
     <tr>
       <th>컨테이너번호</th>
@@ -112,18 +138,65 @@
 </div>
 
 <script>
-  function select_submit(){
-    document.getElementById('group_form').submit();
+  function select_row() {
+    var rowPerPage = $('[name="rowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
+  
+    var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+    if (!rowPerPage) {
+      alert(zeroWarning);
+      return;
+    }
+    $('#nav').remove();
+    var $products = $('#container-table');
+  
+    $products.after('<div id="nav">');
+  
+  
+    var $tr = $($products).find('tbody tr');
+    var rowTotals = $tr.length;
+  
+    var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+    var i = 0;
+  
+    for (; i < pageTotal; i++) {
+      $('<a href="#"></a>')
+          .attr('rel', i)
+          .html(i + 1)
+          .appendTo('#nav');
+    }
+  
+    $tr.addClass('off-screen')
+        .slice(0, rowPerPage)
+        .removeClass('off-screen');
+  
+    var $pagingLink = $('#nav a');
+    $pagingLink.on('click', function (evt) {
+      evt.preventDefault();
+      var $this = $(this);
+      if ($this.hasClass('active')) {
+        return;
+      }
+      $pagingLink.removeClass('active');
+      $this.addClass('active');
+  
+      var currPage = $this.attr('rel');
+      var startItem = currPage * rowPerPage;
+      var endItem = startItem + rowPerPage;
+  
+      $tr.css('opacity', '0.0')
+          .addClass('off-screen')
+          .slice(startItem, endItem)
+          .removeClass('off-screen')
+          .animate({opacity: 1}, 300);
+  
+    });
+  
+    $pagingLink.filter(':first').addClass('active');
   }
 </script>
 
-<script type="text/javascript">
-  $(document).ready( function () {
-    $('#container-table').DataTable();
-  } );
-</script>
-
 <script>
+  select_row();
   var modal = document.getElementById("myModal");
   var table =document.getElementById('container-table');
   var rowList = table.rows; 
