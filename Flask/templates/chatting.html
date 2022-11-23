@@ -234,7 +234,9 @@
           });
           document.getElementById("id").value=id;
           document.getElementById("h3_id").innerHTML = "&nbsp; &nbsp; &nbsp; &nbsp;"+id+" 트러커님";
+
           modal.style.display = "block";
+          $("#chat-inner.inner").scrollTop($("#chat-inner.inner")[0].scrollHeight);
        }
     }(row);
   }
