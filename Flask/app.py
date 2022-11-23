@@ -174,17 +174,10 @@ def index():
     if(request.method=="GET"):
         usr = session.get("info")
         select_tn = request.args.get("select_tn",usr["tn"])
-        status = request.args.get("status","모두")
         terminal = terminal_table.query.filter_by(tn=select_tn).first()
+        container = container_table.query.filter(container_table.tn==select_tn).all()
         
-        if(status == "모두"):
-            container = container_table.query.filter(container_table.tn==select_tn).all()
-        elif(status == "반입"):
-            container = container_table.query.filter((container_table.tn==select_tn)&(container_table.in_out == True)).all()
-        else:
-            container = container_table.query.filter((container_table.tn==select_tn)&(container_table.in_out == False)).all()
-        
-        return render_template('terminal.html', terminal=terminal, containers=container, status=status, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
+        return render_template('terminal.html', terminal=terminal, containers=container, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
 
 @app.route("/terminal_update", methods=["POST"])
 def terminal_update():
@@ -284,7 +277,7 @@ def reservation():
     if(request.method=="GET"):
         usr = session.get("info")
         select_tn = request.args.get("select_tn",usr["tn"])
-        reservation = reservation_table.query.filter_by(tn=select_tn).all()
+        reservation = reservation_table.query.filter(reservation_table.tn==select_tn).all()
         
         accept = reservation_table.query.with_entities(
             reservation_table.accept_time,

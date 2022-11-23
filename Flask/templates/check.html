@@ -3,12 +3,10 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
 <form action="{{ url_for("check") }}" id="group_form" method="GET">
   <div style="float: left;">
@@ -26,7 +24,7 @@
 
 <h3>미응답 보류 결함 요청 알림</h3>
 
-<table id='check-wait-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='check-wait-table' class="hover">
   <thead>
     <tr>
       <th>일시</th>
@@ -59,7 +57,7 @@
 
 <h3>결함 처리 기록</h3>
 
-<table id='check-result-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='check-result-table' class="hover">
   <thead>
     <tr>
       <th>일시</th>

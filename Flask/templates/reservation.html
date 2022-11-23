@@ -1,15 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
 <form action="{{ url_for("reservation") }}" id="group_form" method="GET">
   <div style="float: left;">
@@ -27,7 +24,7 @@
 
 <h3>예약 현황</h3>
 
-<table id='reservation-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='reservation-table' class="hover">
     <thead>
       <tr>
         <th>요청 시간</th>
@@ -60,7 +57,7 @@
 
   <h3>시간대별 트러커 예약 현황</h3>
 
-  <table id='accept-table' class="uk-table uk-table-hover uk-table-striped">
+  <table id='accept-table' class="hover">
     <thead>
       <tr>
         <th>예약시간</th>
@@ -86,7 +83,7 @@
       <form action="{{ url_for('reservation') }}" method="post">
         <input type="hidden" name="id" id="id" />
         <h2 id="h2_id"></h2>
-        <table table id='suggestion-table' class="uk-table uk-table-hover uk-table-striped">
+        <table table id='suggestion-table' class="hover">
             <thead>
                 <tr>
                     <th></th>
