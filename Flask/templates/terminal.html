@@ -10,7 +10,7 @@
 
 <form action="{{ url_for("index") }}" id="group_form" method="GET">
   <div style="float: left;">
-    <select name="select_tn" onchange="select_submit()">
+    <select name="select_tn" onchange="this.form.submit()">
       {% for tn in tns%}
       {% if tn[0] == select_tn %}
       <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
@@ -108,12 +108,6 @@
   </form>
   </div>
 </div>
-
-<script>
-  function select_submit(){
-    document.getElementById('group_form').submit();
-  }
-</script>
 
 <script type="text/javascript">
   $(document).ready( function () {

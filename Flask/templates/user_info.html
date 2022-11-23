@@ -10,7 +10,7 @@
 
 <form action="{{ url_for("user_info") }}" id="group_form" method="GET">
     <div style="float: left;">
-      <select name="select_tn" onchange="select_submit()">
+      <select name="select_tn" onchange="this.form.submit()">
         {% for tn in tns%}
         {% if tn[0] == select_tn %}
         <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
@@ -60,7 +60,7 @@
 <h3>방문 트러커</h3>
 
 <form action="{{ url_for("user_info") }}" id="date_form" method="GET">
-  <input type="date" name="date" onchange="date_submit()" value="{{date}}">
+  <input type="date" name="date" onchange="this.form.submit()" value="{{date}}">
 </form><br>
 
 <table id='user-visit-table' class="hover order-column">
@@ -98,15 +98,6 @@
   </form>
   </div>
 </div>
-
-<script>
-  function select_submit(){
-    document.getElementById('group_form').submit();
-  }
-    function date_submit(){
-      document.getElementById('date_form').submit();
-    }
-</script>
 
 <script type="text/javascript">
   $(document).ready( function () {
