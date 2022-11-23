@@ -3,12 +3,10 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.8/semantic.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.uikit.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
 <form action="{{ url_for("index") }}" id="group_form" method="GET">
   <div style="float: left;">
@@ -32,19 +30,19 @@
   <h3>현재 트러커 수 : <input type="number" name="car_amount" min="0" value="{{ terminal.car_amount }}" /></h3><p>
 
   <h3>혼잡도 상태</h3>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>원활</legend>
       <input type="number" name="easy" min="0" value="{{ terminal.easy }}" />
     </fieldset>
   </div>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>보통</legend>
       <input type="number" name="normal" min="0" value="{{ terminal.normal }}" />
     </fieldset>
   </div>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>혼잡</legend>
       <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
@@ -54,7 +52,7 @@
 
 <h3>컨테이너 정보</h3>
 
-<table id='container-table' class="uk-table uk-table-hover uk-table-striped">
+<table id='container-table' class="hover order-column">
   <thead>
     <tr>
       <th>컨테이너번호</th>
@@ -119,7 +117,9 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#container-table').DataTable();
+    $('#container-table').DataTable({
+      stateSave: true
+    });
   } );
 </script>
 
