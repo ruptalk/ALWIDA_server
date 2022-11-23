@@ -24,7 +24,7 @@
 
 <h3>예약 현황</h3>
 
-<table id='reservation-table' class="hover">
+<table id='reservation-table' class="hover order-column">
     <thead>
       <tr>
         <th>요청 시간</th>
@@ -57,7 +57,7 @@
 
   <h3>시간대별 트러커 예약 현황</h3>
 
-  <table id='accept-table' class="hover">
+  <table id='accept-table' class="hover order-column">
     <thead>
       <tr>
         <th>예약시간</th>
@@ -83,7 +83,7 @@
       <form action="{{ url_for('reservation') }}" method="post">
         <input type="hidden" name="id" id="id" />
         <h2 id="h2_id"></h2>
-        <table table id='suggestion-table' class="hover">
+        <table table id='suggestion-table' class="hover order-column">
             <thead>
                 <tr>
                     <th></th>
@@ -138,7 +138,9 @@
     $('#accept-table').DataTable();
   } );
   $(document).ready( function () {
-    $('#suggestion-table').DataTable();
+    $('#suggestion-table').DataTable({
+      order: [[1, 'asc']],
+    });
   } );
 </script>
 

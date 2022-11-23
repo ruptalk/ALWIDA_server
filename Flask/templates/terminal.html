@@ -30,19 +30,19 @@
   <h3>현재 트러커 수 : <input type="number" name="car_amount" min="0" value="{{ terminal.car_amount }}" /></h3><p>
 
   <h3>혼잡도 상태</h3>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>원활</legend>
       <input type="number" name="easy" min="0" value="{{ terminal.easy }}" />
     </fieldset>
   </div>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>보통</legend>
       <input type="number" name="normal" min="0" value="{{ terminal.normal }}" />
     </fieldset>
   </div>
-  <div style="float: left;">
+  <div style="float: left; text-align: center;">
     <fieldset>
       <legend>혼잡</legend>
       <input type="number" name="difficalt" min="0" value="{{ terminal.difficalt }}" />
@@ -52,7 +52,7 @@
 
 <h3>컨테이너 정보</h3>
 
-<table id='container-table' class="hover stripe">
+<table id='container-table' class="hover order-column">
   <thead>
     <tr>
       <th>컨테이너번호</th>
