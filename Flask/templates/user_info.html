@@ -110,10 +110,14 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#user-info-table').DataTable();
+    $('#user-info-table').DataTable({
+      stateSave: true
+    });
   } );
   $(document).ready( function () {
-    $('#user-visit-table').DataTable();
+    $('#user-visit-table').DataTable({
+      stateSave: true
+    });
   } );
 </script>
 

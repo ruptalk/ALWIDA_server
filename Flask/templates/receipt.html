@@ -55,7 +55,9 @@
 
 <script type="text/javascript">
     $(document).ready( function () {
-      $('#receipt-table').DataTable();
+      $('#receipt-table').DataTable({
+        stateSave: true
+      });
     } );
   </script>
   <script>

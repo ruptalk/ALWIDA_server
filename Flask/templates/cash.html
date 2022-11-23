@@ -56,7 +56,9 @@
 
 <script type="text/javascript">
     $(document).ready( function () {
-      $('#cash-table').DataTable();
+      $('#cash-table').DataTable({
+        stateSave: true
+      });
     } );
   </script>
   <script>

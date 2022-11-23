@@ -117,7 +117,9 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#container-table').DataTable();
+    $('#container-table').DataTable({
+      stateSave: true
+    });
   } );
 </script>
 

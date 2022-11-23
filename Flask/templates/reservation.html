@@ -132,14 +132,19 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#reservation-table').DataTable();
+    $('#reservation-table').DataTable({
+      stateSave: true
+    });
   } );
   $(document).ready( function () {
-    $('#accept-table').DataTable();
+    $('#accept-table').DataTable({
+      stateSave: true
+    });
   } );
   $(document).ready( function () {
     $('#suggestion-table').DataTable({
-      order: [[1, 'asc']],
+      stateSave: true,
+      order: [[1, 'asc']]
     });
   } );
 </script>

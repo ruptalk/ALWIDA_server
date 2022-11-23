@@ -101,7 +101,9 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#chatting-table').DataTable();
+    $('#chatting-table').DataTable({
+      stateSave: true
+    });
   } );
 </script>
 

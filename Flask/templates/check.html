@@ -140,10 +140,14 @@
 
 <script type="text/javascript">
   $(document).ready( function () {
-    $('#check-wait-table').DataTable();
+    $('#check-wait-table').DataTable({
+      stateSave: true
+    });
   } );
   $(document).ready( function () {
-    $('#check-result-table').DataTable();
+    $('#check-result-table').DataTable({
+      stateSave: true
+    });
   } );
 </script>
 
