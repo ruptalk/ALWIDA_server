@@ -48,6 +48,8 @@ def signin():
 
 @app.route("/signup", methods=["GET","POST"])
 def signup():
+    if is_login():
+        return alert("이미 로그인하셨습니다!","/")
     if(request.method=="GET"):
         tns = terminal_table.query.with_entities(terminal_table.tn).filter_by().all()
         return render_template('signup.html',tns=tns, check=is_login())
