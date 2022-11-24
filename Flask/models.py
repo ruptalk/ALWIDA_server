@@ -91,3 +91,12 @@ class message_table(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     sender = db.Column(db.Boolean, nullable=False)
     
+    def obj_to_dict(self):
+        return {
+            "idx":self.idx,
+            "id":self.id,
+            "message":self.message,
+            "time":self.time,
+            "sender":self.sender
+        }
+    
