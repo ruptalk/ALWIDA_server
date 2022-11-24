@@ -1,6 +1,6 @@
 import os
 import base64
-from flask import Flask, request, render_template, session, url_for
+from flask import Flask, request, render_template, session, url_for, jsonify
 from sqlalchemy import func, inspect
 from datetime import datetime
 import uuid
@@ -355,28 +355,34 @@ def chatting():
                                                             .outerjoin(user_table, user_table.id == chatting_table.id)\
                                                             .with_entities(chatting_table.state, chatting_table.id, user_table.car_num, reservation_table.container_num)\
                                                             .filter(reservation_table.tn==select_tn).all()
-        message = message_table.query.filter().order_by(message_table.time).all()
-        
-        chatting = [list(x) for x in chatting]
-        
-        for chat in chatting:
-            id = chat[1]
-            msgs = []
-            for msg in message:
-                if(msg.id == id):
-                    msgs.append([msg.message,msg.time.strftime("%Y-%m-%d %H:%M:%S"),msg.sender])
-            chat.append(msgs)
 
         return  render_template('chatting.html', chattings=chatting, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
     elif(request.method=="POST"):
-        id = request.form.get("id")
-        text = request.form.get("send_text")
+        data = request.get_json()
+        message = message_table.query.filter(message_table.id == data["id"]).order_by(message_table.time).all()
+        message = [msg.obj_to_dict() for msg in message]
         
-        msg = message_table(id=id, message=text, time=datetime.now(), sender=False)
-        db.session.add(msg)
+        for i, msg in enumerate(message):
+            message[i]["time"] = msg["time"].strftime("%Y-%m-%d %H:%M:%S")
+        
+        return jsonify(message = message, len=len(message))
+
+@app.route("/chatting_update", methods=["POST"])
+def chatting_update():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    if(request.method=="POST"):
+        data = request.get_json()
+        new_msg = message_table(id=data["id"], message=data["text"], time=datetime.now(), sender=False)
+        db.session.add(new_msg)
         db.session.commit()
         
-        return alert("완료!")
-    
+        message = message_table.query.filter(message_table.id == data["id"]).order_by(message_table.time).all()
+        message = [msg.obj_to_dict() for msg in message]
+        
+        for i, msg in enumerate(message):
+            message[i]["time"] = msg["time"].strftime("%Y-%m-%d %H:%M:%S")
+        
+        return jsonify(message = message, len=len(message))
 
 app.run(host="0.0.0.0", port=8888)

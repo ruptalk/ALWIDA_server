@@ -31,7 +31,6 @@
       <th>트러커</th>
       <th>차량번호</th>
       <th>컨테이너번호</th>
-      <th style="display:none;"></th>
     </tr>
   </thead>
   <tbody>
@@ -57,13 +56,10 @@
         <td>{{chatting[1]}}</td>
         <td>{{chatting[2]}}</td>
         <td>{{chatting[3]}}</td>
-        <td style="display:none;">{{chatting[4]}}</td>
     </tr>
       {% endfor %}
   </tbody>
 </table>
-
-<iframe id="iframe1" name="iframe1" style="display:none"></iframe>
 
 <div id="myModal" class="modal">
   <div class="modal-chatting">
@@ -80,15 +76,15 @@
       </div>
     </div>
     <div class="div-chatting-send">
-      <form action="{{ url_for("chatting") }}" id="send_form" method="POST" target="iframe1">
+
         <input type="hidden" name="id" id="id"/>
         <div style="float:left;width:80%;">
           <textarea cols="70" rows="1" name="send_text" id="send_text" oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"' style="widht:100%;resize: none; padding: 8px; margin: 20px;max-height: 100px;"></textarea>
         </div>
         <div style="float:left;width:20%;">
-          <button class="chatting-btn" onclick="create_submit()">전송</button>
+          <button id="submit_but" class="chatting-btn" onclick="create_submit()">전송</button>
         </div>
-      </form>
+
     </div>
   </div>
 </div>
@@ -102,59 +98,87 @@
 </script>
 
 <script>
-  function strToArray(str) {
-    str = str.replace(/[\[\]']+/g, '');
-    var array = [];
-    var array2 = [];
-    array = str.split(',');
-    
-    for (var i = 0; i < array.length; i++) {
-      array[i] = array[i].trim();
-    }
-    
-    // 1차원 array -> 2차원 array
-      while (array.length > 0) {
-        array2.push(array.splice(0, 3));
-      }
-    
-    return array2;
-  }
   function create_submit(){
-    var chat_inner = document.getElementById("chat-inner");
-    var send_text = document.getElementById("send_text");
-    var send_form = document.getElementById("send_form");
+    var id = document.getElementById("id").value;
+    var text = document.getElementById("send_text").value;
 
-    var today = new Date();
+    var data = {
+      "id":id,
+      "text":text
+    }
 
-    var year = today.getFullYear();
-    var month = ('0' + (today.getMonth() + 1)).slice(-2);
-    var day = ('0' + today.getDate()).slice(-2);
-    var hours = ('0' + today.getHours()).slice(-2); 
-    var minutes = ('0' + today.getMinutes()).slice(-2);
-    var seconds = ('0' + today.getSeconds()).slice(-2); 
-    
-    var dateString = year + '-' + month  + '-' + day + ' '+ hours + ':' + minutes  + ':' + seconds;;
+    $.ajax({
+      type: 'POST',
+      url: '{{ url_for("chatting_update") }}',
+      data: JSON.stringify(data),
+      dataType : 'JSON',
+      contentType: 'application/json',
+      success: function(data){
+        if(data["len"]==0){
+          alert("채팅이 없습니다!");
+        }
+        else {
+          var chat_inner = document.getElementById("chat-inner");
+          while(chat_inner.firstChild)  {
+            chat_inner.removeChild(chat_inner.firstChild);
+          }
+          data["message"].forEach(function(msg){
+            if(msg["sender"]){
+              var item =  document.createElement("div");
+              item.setAttribute("class","item");
 
-    var item =  document.createElement("div");
-    item.setAttribute("class","item mymsg");
+              var box = document.createElement("div");
+              box.setAttribute("class","box");
 
-    var box = document.createElement("div");
-    box.setAttribute("class","box");
+              var new_msg = document.createElement("p");
+              new_msg.setAttribute("class","msg");
+              new_msg.innerHTML = msg["message"];
 
-    var new_msg = document.createElement("p");
-    new_msg.setAttribute("class","msg");
-    new_msg.innerHTML = send_text.value;
+              var time = document.createElement("span");
+              time.setAttribute("class", "time");
+              time.innerHTML = msg["time"];
 
-    var time = document.createElement("span");
-    time.setAttribute("class", "time");
-    time.innerHTML = dateString;
+              box.appendChild(new_msg);
+              box.appendChild(time);
+              item.appendChild(box);
 
-    box.appendChild(new_msg);
-    box.appendChild(time);
-    item.appendChild(box);
+              chat_inner.appendChild(item);
+            }
+            else {
+              var item =  document.createElement("div");
+              item.setAttribute("class","item mymsg");
 
-    chat_inner.appendChild(item);
-    send_form.submit();
+              var box = document.createElement("div");
+              box.setAttribute("class","box");
+
+              var new_msg = document.createElement("p");
+              new_msg.setAttribute("class","msg");
+              new_msg.innerHTML = msg["message"];
+
+              var time = document.createElement("span");
+              time.setAttribute("class", "time");
+              time.innerHTML = msg["time"];
+
+              box.appendChild(new_msg);
+              box.appendChild(time);
+              item.appendChild(box);
+
+              chat_inner.appendChild(item);
+            }
+
+            document.getElementById("id").value=id;
+            document.getElementById("h3_id").innerHTML = "&nbsp; &nbsp; &nbsp; &nbsp;"+id+" 트러커님";
+
+            modal.style.display = "block";
+            $("#chat-inner.inner").scrollTop($("#chat-inner.inner")[0].scrollHeight);
+            document.getElementById("send_text").value = null;
+          });
+        }
+      },
+      error: function(request, status, error){
+        alert('ajax 통신 실패');
+      }
+    })
   }
 </script>
 
@@ -180,66 +204,97 @@
       row.onclick = function(){ 
         return function(){ 
           var id = this.cells[1].innerHTML;
-          var msgs = this.cells[4].innerHTML;
-          msgs = strToArray(msgs);
 
-          var chat_inner = document.getElementById("chat-inner");
-          while(chat_inner.firstChild)  {
-            chat_inner.removeChild(chat_inner.firstChild);
+          var data = {
+            'id' : id
           }
 
-          msgs.forEach(function(msg) {
-            if(msg[2]=="True"){
-              var item =  document.createElement("div");
-              item.setAttribute("class","item");
+          $.ajax({
+            type: 'POST',
+            url: '{{ url_for("chatting") }}',
+            data: JSON.stringify(data),
+            dataType : 'JSON',
+            contentType: 'application/json',
+            success: function(data){
+              if(data["len"]==0){
+                alert("채팅이 없습니다!");
+              }
+              else {
+                var chat_inner = document.getElementById("chat-inner");
+                while(chat_inner.firstChild)  {
+                  chat_inner.removeChild(chat_inner.firstChild);
+                }
+                data["message"].forEach(function(msg){
+                  if(msg["sender"]){
+                    var item =  document.createElement("div");
+                    item.setAttribute("class","item");
 
-              var box = document.createElement("div");
-              box.setAttribute("class","box");
+                    var box = document.createElement("div");
+                    box.setAttribute("class","box");
 
-              var new_msg = document.createElement("p");
-              new_msg.setAttribute("class","msg");
-              new_msg.innerHTML = msg[0];
+                    var new_msg = document.createElement("p");
+                    new_msg.setAttribute("class","msg");
+                    new_msg.innerHTML = msg["message"];
 
-              var time = document.createElement("span");
-              time.setAttribute("class", "time");
-              time.innerHTML = msg[1];
+                    var time = document.createElement("span");
+                    time.setAttribute("class", "time");
+                    time.innerHTML = msg["time"];
 
-              box.appendChild(new_msg);
-              box.appendChild(time);
-              item.appendChild(box);
+                    box.appendChild(new_msg);
+                    box.appendChild(time);
+                    item.appendChild(box);
 
-              chat_inner.appendChild(item);
+                    chat_inner.appendChild(item);
+                  }
+                  else {
+                    var item =  document.createElement("div");
+                    item.setAttribute("class","item mymsg");
+      
+                    var box = document.createElement("div");
+                    box.setAttribute("class","box");
+      
+                    var new_msg = document.createElement("p");
+                    new_msg.setAttribute("class","msg");
+                    new_msg.innerHTML = msg["message"];
+      
+                    var time = document.createElement("span");
+                    time.setAttribute("class", "time");
+                    time.innerHTML = msg["time"];
+      
+                    box.appendChild(new_msg);
+                    box.appendChild(time);
+                    item.appendChild(box);
+      
+                    chat_inner.appendChild(item);
+                  }
+
+                  document.getElementById("id").value=id;
+                  document.getElementById("h3_id").innerHTML = "&nbsp; &nbsp; &nbsp; &nbsp;"+id+" 트러커님";
+
+                  modal.style.display = "block";
+                  $("#chat-inner.inner").scrollTop($("#chat-inner.inner")[0].scrollHeight);
+                });
+              }
+            },
+            error: function(request, status, error){
+              alert('ajax 통신 실패');
             }
-            else {
-              var item =  document.createElement("div");
-              item.setAttribute("class","item mymsg");
-
-              var box = document.createElement("div");
-              box.setAttribute("class","box");
-
-              var new_msg = document.createElement("p");
-              new_msg.setAttribute("class","msg");
-              new_msg.innerHTML = msg[0];
-
-              var time = document.createElement("span");
-              time.setAttribute("class", "time");
-              time.innerHTML = msg[1];
-
-              box.appendChild(new_msg);
-              box.appendChild(time);
-              item.appendChild(box);
-
-              chat_inner.appendChild(item);
-            }
-          });
-          document.getElementById("id").value=id;
-          document.getElementById("h3_id").innerHTML = "&nbsp; &nbsp; &nbsp; &nbsp;"+id+" 트러커님";
-
-          modal.style.display = "block";
-          $("#chat-inner.inner").scrollTop($("#chat-inner.inner")[0].scrollHeight);
+          })
        }
     }(row);
   }
 </script>  
+
+<script>
+  var btn = document.getElementById("send_text");
+  btn.addEventListener("keyup", function(event) {
+    if(event.keyCode === 13) {
+      if(!event.shiftKey){
+        event.preventDefault();
+        document.getElementById("submit_but").click();
+      }
+    }
+  });
+</script>
 
 {% endblock %}
