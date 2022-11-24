@@ -30,6 +30,12 @@ def alert(msg, loc=None):
 def is_login():
     return session.get("info")
 
+@app.after_request
+def after_request(response):
+    response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' https://code.jquery.com/jquery-3.5.1.js https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    response.headers["X-Frame-Options"] = "deny"
+    return response
+
 @app.route("/signin", methods=['GET','POST'])
 def signin():
     if is_login():
