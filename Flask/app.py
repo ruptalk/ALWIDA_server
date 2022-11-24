@@ -259,7 +259,7 @@ def receipt():
         try:
             id = request.form.get("id","")
             container_num = request.form.get("container_num","")
-            receipt = receipt_table.query.filter((id==id)&(container_num==container_num)).first()
+            receipt = receipt_table.query.filter((receipt_table.id==id)&(receipt_table.container_num==container_num)).first()
             receipt.publish = True
             db.session.commit()
         
@@ -280,7 +280,7 @@ def cash():
         id = request.form.get("id","")
         container_num = request.form.get("container_num","")
         
-        cash = cash_table.query.filter((id==id)&(container_num==container_num)).first()
+        cash = cash_table.query.filter((cash_table.id==id)&(cash_table.container_num==container_num)).first()
         cash.publish_pay = True
         cash.pay_datetime = datetime.now()
         db.session.commit()
