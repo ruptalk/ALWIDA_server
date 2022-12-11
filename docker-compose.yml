@@ -1,12 +1,12 @@
 version: '3'
 services:
   flask:
-    build: ./Flask
-    image: alwida/flask
+    build: ./ALWIDA_admin
+    image: alwida/admin
     ports:
       - 8888:8888
     volumes:
-      - ./Flask:/usr/src/app
+      - ./ALWIDA_admin:/usr/src/app
     environment:
       - TZ=Asia/Seoul
   mariadb:
