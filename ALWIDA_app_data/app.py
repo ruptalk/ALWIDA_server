@@ -50,18 +50,18 @@ def signup_id():
             return jsonify({'result':'error'})
                 
 
-@app.route("/signup_num", methods=["POST"])
-def signup_num():
-    if(request.method == "POST"):
-        id = request.form.get("id","")
-        checkNum = request.form.get("checknum","")
+# @app.route("/signup_num", methods=["POST"])
+# def signup_num():
+#     if(request.method == "POST"):
+#         id = request.form.get("id","")
+#         checkNum = request.form.get("checknum","")
         
-        user = user_table.query.filter((user_table.id==id) & (user_table.check_num==checkNum)).first()
+#         user = user_table.query.filter((user_table.id==id) & (user_table.check_num==checkNum)).first()
 
-        if(hasattr(user, 'id')):
-            return jsonify({'result':True})
-        else:
-            return jsonify({'result':False})
+#         if(hasattr(user, 'id')):
+#             return jsonify({'result':True})
+#         else:
+#             return jsonify({'result':False})
         
 
 @app.route("/signup", methods=["POST"])
@@ -75,13 +75,16 @@ def signup():
         pw = request.form.get("pw","")
         agreeCheck = bool(request.form.get("agreeCheck",""))
         
-        try:
-            new_user = user_table(id=id, pw=pw, name=name, phone=phoneNum, tn="PNIT", car_num=carNum, address=address, check_num=None, info_agree=agreeCheck, info_gps=True)
+        if(name != "" or phoneNum != "" or address != "" or carNum != "" or id != "" or pw != "" or agreeCheck != ""):
+            try:
+                new_user = user_table(id=id, pw=pw, name=name, phone=phoneNum, car_num=carNum, address=address, check_num=None, info_agree=agreeCheck, info_gps=True)
 
-            db.session.add(new_user)
-            db.session.commit()
-            return jsonify({'result':True})
-        except:
-            return jsonify({'result':False})
+                db.session.add(new_user)
+                db.session.commit()
+                return jsonify({'result':True})
+            except:
+                return jsonify({'result':False})
+        else:
+            return jsonify({'result':'error'})
 
 app.run(host="0.0.0.0", port=5000)

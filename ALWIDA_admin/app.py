@@ -342,7 +342,7 @@ def user_info():
         select_tn = request.args.get("select_tn",usr["tn"])
         date = request.args.get("date",datetime.now().date())
         
-        user = user_table.query.filter_by(tn=select_tn).all()
+        user = user_table.query.filter_by().all()
         
         reservation = reservation_table.query.join(user_table, reservation_table.id==user_table.id)\
                                                             .with_entities(reservation_table.accept_time, user_table.id, user_table.car_num, reservation_table.container_num, user_table.phone)\
