@@ -29,7 +29,6 @@ class user_table(db.Model):
     pw = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(11), nullable=False)
-    tn = db.Column(db.String(30), nullable=False)
     car_num = db.Column(db.String(20), nullable=False)
     check_num = db.Column(db.String(5), nullable=False)
     info_agree = db.Column(db.Boolean, nullable=False)

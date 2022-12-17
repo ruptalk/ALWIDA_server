@@ -6,7 +6,6 @@ CREATE TABLE `user_table` (
 	`pw`	VARCHAR(20)	NOT NULL,
 	`name`	VARCHAR(20)	NOT NULL,
 	`phone`	VARCHAR(11)	NOT NULL,
-	`tn`	VARCHAR(30)	NOT NULL,
 	`car_num`	VARCHAR(20)	NOT NULL,
 	`address`	VARCHAR(100)	NOT NULL,
 	`check_num`	VARCHAR(5)	NULL,
@@ -123,13 +122,6 @@ ALTER TABLE `check_table` ADD CONSTRAINT `PK_CHECK_TABLE` PRIMARY KEY (
 
 ALTER TABLE `chatting_table` ADD CONSTRAINT `PK_CHATTING_TABLE` PRIMARY KEY (
 	`id`
-);
-
-ALTER TABLE `user_table` ADD CONSTRAINT `FK_terminal_table_TO_user_table_1` FOREIGN KEY (
-	`tn`
-)
-REFERENCES `terminal_table` (
-	`tn`
 );
 
 ALTER TABLE `admin_table` ADD CONSTRAINT `FK_terminal_table_TO_admin_table_1` FOREIGN KEY (
@@ -262,20 +254,20 @@ INSERT INTO admin_table VALUES (UUID(), 'admin2','admin2','PNC','admin2','010222
 INSERT INTO admin_table VALUES (UUID(), 'admin3','admin3','HJNC','admin3','01033333333',NULL);
 -- end insert terminal
 
-INSERT INTO user_table VALUES ('user1','user1','user1','01099999999','PNIT','1111','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user2','user2','user2','01088888888','PNIT','2222','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user3','user3','user3','01077777777','PNIT','3333','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user4','user4','user4','01066666666','PNIT','4444','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user5','user5','user5','01055555555','PNIT','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user6','user6','user6','01055555555','PNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user7','user7','user7','01055555555','PNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user8','user8','user8','01055555555','PNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user9','user9','user9','01055555555','PNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user10','user10','user10','01055555555','PNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user11','user11','user11','01055555555','HJNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user12','user12','user12','01055555555','HJNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user13','user13','user13','01055555555','HJNC','5555','add','AAAA', 1, 1);
-INSERT INTO user_table VALUES ('user14','user14','user14','01055555555','HJNC','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user1','user1','user1','01099999999','1111','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user2','user2','user2','01088888888','2222','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user3','user3','user3','01077777777','3333','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user4','user4','user4','01066666666','4444','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user5','user5','user5','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user6','user6','user6','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user7','user7','user7','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user8','user8','user8','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user9','user9','user9','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user10','user10','user10','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user11','user11','user11','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user12','user12','user12','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user13','user13','user13','01055555555','5555','add','AAAA', 1, 1);
+INSERT INTO user_table VALUES ('user14','user14','user14','01055555555','5555','add','AAAA', 1, 1);
 
 INSERT INTO container_table VALUES ('1111','user1','PNIT','규격1','F','장치위치1',NOW(),1);
 INSERT INTO reservation_table VALUES ('user1', '1111', 'PNIT',NOW(), NULL, NULL);
