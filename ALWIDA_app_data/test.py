@@ -1,8 +1,8 @@
 import requests
 
 
-# url = "http://localhost:5000/signup"
-url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup_id"
+url = "http://localhost:5000/reservation_state"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup_id"
 
 # data = {
 #     "name":"양강민",
@@ -20,8 +20,16 @@ url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup
 # }
 
 data = {
-    "id":"user1123"
+    "id":"user1"
 }
 
+# data = {
+#     "id":"user1",
+#     "location":"부산신항",
+#     "name":"국제신항",
+#     "time":"2022-12-17"
+# }
+
 res = requests.post(url,data=data)
+# res = requests.post(url)
 print(res.text)
