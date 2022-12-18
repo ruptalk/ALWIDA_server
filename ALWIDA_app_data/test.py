@@ -2,15 +2,15 @@ import requests
 
 
 url = "http://localhost:5000/reservation_state"
-# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup_id"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/reservation_state"
 
 # data = {
-#     "name":"양강민",
-#     "phoneNum":"01092337395",
+#     "name":"test",
+#     "phoneNum":"01012345678",
 #     "address":"부산",
 #     "carNum":"2425",
-#     "id":"hogbal",
-#     "pw":"hogbal",
+#     "id":"test",
+#     "pw":"test",
 #     "agreeCheck":True
 # }
 
@@ -25,10 +25,19 @@ data = {
 
 # data = {
 #     "id":"user1",
+#     "containerNum":"1111",
 #     "location":"부산신항",
-#     "name":"국제신항",
-#     "time":"2022-12-17"
+#     "terminal":"국제신항",
+#     "hour":12,
+#     "minute":36
 # }
+
+# data = {
+#     "id":"user1",
+#     "hour":15,
+#     "minute":30
+# }
+
 
 res = requests.post(url,data=data)
 # res = requests.post(url)

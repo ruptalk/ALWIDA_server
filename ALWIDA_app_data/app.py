@@ -1,6 +1,8 @@
 import os
 import random
-from flask import Flask, request, render_template, session, url_for, jsonify
+import datetime
+import json
+from flask import Flask, request, render_template, session, url_for, jsonify, make_response
 from sqlalchemy import func, inspect
 from models import admin_table, user_table, terminal_table, container_table, reservation_table, receipt_table, cash_table, check_table, chatting_table, message_table, init_db
 
@@ -160,11 +162,15 @@ def reservation():
         containerNum = request.form.get("containerNum","")
         location = request.form.get("location","")
         terminal = request.form.get("terminal","")
-        time = request.form.get("time","")
+        hour = request.form.get("hour","")
+        minute = request.form.get("minute","")
         
-        if(id != "" and containerNum!= "" and location != "" and terminal != "" and time != ""):        
+        if(id != "" and containerNum!= "" and location != "" and terminal != "" and hour != "" and minute != ""):        
             try:
                 tn = terminal_table.query.with_entities(terminal_table.tn).filter((terminal_table.location==location)&(terminal_table.name==terminal)).first()[0]
+            
+                now = datetime.date.today()
+                time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
             
                 new_reservation = reservation_table(id=id, container_num=containerNum, tn=tn, request_time=time,accept_time=None, suggestion=None)
             
@@ -194,12 +200,16 @@ def recommend_time():
 def accept_time():
     if(request.method == "POST"):
         id = request.form.get("id","")
-        selectedTime = request.form.get("selectedTime","")
+        hour = request.form.get("hour","")
+        minute = request.form.get("minute","")
         
-        if(id != "" and selectedTime != ""):
+        if(id != "" and hour != "" and minute != ""):
             try:
-                reservation = reservation_table.query.filter(reservation.id==id).first()
-                reservation.accept_time = selectedTime
+                reservation = reservation_table.query.filter(reservation_table.id==id).first()
+                
+                now = datetime.date.today()
+                time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
+                reservation.accept_time = time
                 
                 db.session.commit()
                 return jsonify({'result':True})
@@ -218,8 +228,9 @@ def reservation_state():
             data = {
                 'location':terminal.location,
                 'terminal':terminal.name,
-                'time':reservation.accept_time
+                'time': reservation.accept_time.strftime("%Y-%m-%d %H:%M:%S")
             }
+
             return data
         else:
             return jsonify({'result':'error'})
