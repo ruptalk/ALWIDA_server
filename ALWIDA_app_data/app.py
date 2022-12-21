@@ -112,7 +112,8 @@ def destination():
             json_data = {}
             json_data["index"] = len(data[loc_index[tm.location]]["terminals"])
             json_data["terminal"] = tm.name
-            json_data["percentage"] = tm.car_amount
+            # json_data["percentage"] = tm.car_amount
+            json_data["percentage"] = random.randrange(0,100)
             if(tm.car_amount < tm.easy):
                 json_data["status"] = "원활"
                 json_data["color"] = "#32B32D"
