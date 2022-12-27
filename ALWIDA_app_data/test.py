@@ -1,8 +1,8 @@
 import requests
 
 
-url = "http://localhost:5000/reservation_state"
-# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/reservation_state"
+url = "http://localhost:5000/receipt"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/container_state"
 
 # data = {
 #     "name":"test",
@@ -16,11 +16,11 @@ url = "http://localhost:5000/reservation_state"
 
 # data = {
 #     "id":"user1",
-#     "pw":"user2"
+#     "pw":"user111"
 # }
 
 data = {
-    "id":"user1"
+    "id":"user2",
 }
 
 # data = {
@@ -36,6 +36,17 @@ data = {
 #     "id":"user1",
 #     "hour":15,
 #     "minute":30
+# }
+
+# data = {
+#     "containerNum":""
+# }
+
+# data = {
+#     "id":"user1",
+#     "phoneNum":"01011111111",
+#     "address":"부산",
+#     "carNum":"2222"
 # }
 
 
