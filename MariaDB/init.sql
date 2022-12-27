@@ -34,12 +34,11 @@ CREATE TABLE `terminal_table` (
 );
 
 CREATE TABLE `receipt_table` (
-	`container_num`	VARCHAR(30)	NOT NULL,
 	`id`	VARCHAR(20)	NOT NULL,
+	`container_num`	VARCHAR(30)	NOT NULL,
 	`publish`	BOOLEAN	NOT NULL,
 	`publish_datetime`	DATETIME	NULL
 );
-
 CREATE TABLE `container_table` (
 	`container_num`	VARCHAR(30)	NOT NULL,
 	`id`	VARCHAR(20)	NOT NULL,
@@ -101,7 +100,7 @@ ALTER TABLE `terminal_table` ADD CONSTRAINT `PK_TERMINAL_TABLE` PRIMARY KEY (
 );
 
 ALTER TABLE `receipt_table` ADD CONSTRAINT `PK_RECEIPT_TABLE` PRIMARY KEY (
-	`container_num`
+	`id`
 );
 
 ALTER TABLE `container_table` ADD CONSTRAINT `PK_CONTAINER_TABLE` PRIMARY KEY (
@@ -131,18 +130,18 @@ REFERENCES `terminal_table` (
 	`tn`
 );
 
-ALTER TABLE `receipt_table` ADD CONSTRAINT `FK_container_table_TO_receipt_table_1` FOREIGN KEY (
-	`container_num`
-)
-REFERENCES `container_table` (
-	`container_num`
-);
-
 ALTER TABLE `receipt_table` ADD CONSTRAINT `FK_user_table_TO_receipt_table_1` FOREIGN KEY (
 	`id`
 )
 REFERENCES `user_table` (
 	`id`
+);
+
+ALTER TABLE `receipt_table` ADD CONSTRAINT `FK_container_table_TO_receipt_table_1` FOREIGN KEY (
+	`container_num`
+)
+REFERENCES `container_table` (
+	`container_num`
 );
 
 ALTER TABLE `container_table` ADD CONSTRAINT `FK_user_table_TO_container_table_1` FOREIGN KEY (
@@ -299,16 +298,16 @@ INSERT INTO reservation_table VALUES ('user13', '13131313', 'PNIT',"2022-11-16 0
 INSERT INTO container_table VALUES ('14141414','user14','PNIT','규격5','F','장치위치5',NOW(),1);
 INSERT INTO reservation_table VALUES ('user14', '14141414', 'PNIT',"2022-11-16 07:29:00", "2022-11-16 07:29:00", NULL);
 
-INSERT INTO receipt_table VALUES ('1111','user1',0,NULL);
-INSERT INTO receipt_table VALUES ('2222','user2',0,NULL);
-INSERT INTO receipt_table VALUES ('3333','user3',0,NULL);
-INSERT INTO receipt_table VALUES ('4444','user4',0,NULL);
-INSERT INTO receipt_table VALUES ('5555','user5',0,NULL);
-INSERT INTO receipt_table VALUES ('6666','user6',1,NOW());
-INSERT INTO receipt_table VALUES ('7777','user7',1,NOW());
-INSERT INTO receipt_table VALUES ('8888','user8',1,NOW());
-INSERT INTO receipt_table VALUES ('9999','user9',1,NOW());
-INSERT INTO receipt_table VALUES ('10101010','user10',1,NOW());
+INSERT INTO receipt_table VALUES ('user1','1111',0,NULL);
+INSERT INTO receipt_table VALUES ('user2','2222',0,NULL);
+INSERT INTO receipt_table VALUES ('user3','3333',0,NULL);
+INSERT INTO receipt_table VALUES ('user4','4444',0,NULL);
+INSERT INTO receipt_table VALUES ('user5','5555',0,NULL);
+INSERT INTO receipt_table VALUES ('user6','6666',1,NOW());
+INSERT INTO receipt_table VALUES ('user7','7777',1,NOW());
+INSERT INTO receipt_table VALUES ('user8','8888',1,NOW());
+INSERT INTO receipt_table VALUES ('user9','9999',1,NOW());
+INSERT INTO receipt_table VALUES ('user10','10101010',1,NOW());
 
 INSERT INTO cash_table VALUES ('user1','1111',0,NULL);
 INSERT INTO cash_table VALUES ('user2','2222',1,NOW());
