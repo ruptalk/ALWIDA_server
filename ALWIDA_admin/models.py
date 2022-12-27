@@ -30,7 +30,8 @@ class user_table(db.Model):
     name = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(11), nullable=False)
     car_num = db.Column(db.String(20), nullable=False)
-    check_num = db.Column(db.String(5), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    check_num = db.Column(db.String(5), nullable=True)
     info_agree = db.Column(db.Boolean, nullable=False)
     info_gps = db.Column(db.Boolean, nullable=False)
 
@@ -62,8 +63,8 @@ class reservation_table(db.Model):
     suggestion = db.Column(db.String(20), nullable=True)
 
 class receipt_table(db.Model):
-    container_num = db.Column(db.String(30), primary_key=True, nullable=False)
-    id = db.Column(db.String(20), nullable=False)
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    container_num = db.Column(db.String(30), nullable=False)
     publish = db.Column(db.Boolean, nullable=False)
     publish_datetime = db.Column(db.DateTime, nullable=True)
 
