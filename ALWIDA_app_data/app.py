@@ -1,7 +1,11 @@
 import os
 import random
+import time
 import datetime
-import json
+import base64
+import hmac
+import hashlib
+import requests
 from flask import Flask, request, render_template, session, url_for, jsonify, make_response
 from sqlalchemy import func, inspect
 from models import admin_table, user_table, terminal_table, container_table, reservation_table, receipt_table, cash_table, check_table, chatting_table, message_table, init_db
@@ -22,6 +26,56 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{db['user']}:{d
 
 db = init_db(app)
 
+# def	make_signature():
+# 	timestamp = int(time.time() * 1000)
+# 	timestamp = str(timestamp)
+
+# 	access_key = "{accessKey}"				# access key id (from portal or Sub Account)
+# 	secret_key = "{secretKey}"				# secret key (from portal or Sub Account)
+# 	secret_key = bytes(secret_key, 'UTF-8')
+
+# 	method = "GET"
+# 	uri = "/sms/v2/services/ncp:sms:kr:297891290516:alwida/messages"
+
+# 	message = method + " " + uri + "\n" + timestamp + "\n"
+# 	+ access_key
+# 	message = bytes(message, 'UTF-8')
+# 	signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+# 	return signingKey
+
+# def make_msg(msg):
+#     header = {
+#         "Content-Type":"application/json; charset=utf-8",
+#         "x-ncp-apigw-timestamp":int(time.time()*1000),
+#         "x-ncp-iam-access-key":"",
+#         "x-ncp-apigw-signature-v2":make_signature()
+#     }
+    
+#     data = {
+#         "type":"SMS",
+#         "from":"string",
+#         "subject":"string",
+#         "content":"string",
+#         "messages":[
+#             {
+#                 "to":"string",
+#                 "subject":"string",
+#                 "content":"string"
+#             }
+#         ],
+#         "files":[
+#             {
+#                 "name":"string",
+#                 "body":"string"
+#             }
+#         ],
+#         "reserveTime": "yyyy-MM-dd HH:mm",
+#         "reserveTimeZone": "string",
+#         "scheduleCode": "string"
+#     }
+    
+    
+
 @app.route("/signin", methods=["POST"])
 def login():
     if(request.method == "POST"):
@@ -30,7 +84,7 @@ def login():
         
         if(id != "" and pw != ""):
             user = user_table.query.filter((user_table.id==id) & (user_table.pw==pw)).first()
-            if(hasattr(user, 'id')):
+            if(user != None):
                 return jsonify({'result':True})
             else:
                 return jsonify({'result':False})
@@ -44,7 +98,6 @@ def signup_id():
         
         if(id != ""):
             user = user_table.query.filter(user_table.id==id).first()
-            print(user)
             if(user == None):
                 return jsonify({'result':True})
             else:
@@ -56,15 +109,10 @@ def signup_id():
 # @app.route("/signup_num", methods=["POST"])
 # def signup_num():
 #     if(request.method == "POST"):
-#         id = request.form.get("id","")
-#         checkNum = request.form.get("checknum","")
+#         phone = request.form.get("phoneNum","")
         
-#         user = user_table.query.filter((user_table.id==id) & (user_table.check_num==checkNum)).first()
-
-#         if(hasattr(user, 'id')):
-#             return jsonify({'result':True})
-#         else:
-#             return jsonify({'result':False})
+#         if(phone != ""):
+            
         
 
 @app.route("/signup", methods=["POST"])
@@ -80,7 +128,7 @@ def signup():
         
         if(name != "" or phoneNum != "" or address != "" or carNum != "" or id != "" or pw != "" or agreeCheck != ""):
             try:
-                new_user = user_table(id=id, pw=pw, name=name, phone=phoneNum, car_num=carNum, address=address, check_num=None, info_agree=agreeCheck, info_gps=True)
+                new_user = user_table(id=id, pw=pw, name=name, phone=phoneNum, car_num=carNum, address=address, check_num=None, info_agree=agreeCheck, info_gps=False)
 
                 db.session.add(new_user)
                 db.session.commit()
@@ -152,7 +200,7 @@ def carnum():
             if(user != None):
                 return jsonify({'result':user.car_num}) 
             else:
-                return jsonify({'result':False})   
+                return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
 
@@ -190,7 +238,7 @@ def recommend_time():
         id = request.form.get("id","")
         if(id != ""):
             suggestion = reservation_table.query.filter(reservation_table.id==id).first().suggestion.split(',')
-            if(suggestion!=None):
+            if(suggestion != None):
                 return suggestion
             else:
                 return jsonify({'result':False})
@@ -226,13 +274,124 @@ def reservation_state():
         if(id != ""):
             reservation = reservation_table.query.filter(reservation_table.id==id).first()
             terminal = terminal_table.query.filter(terminal_table.tn==reservation.tn).first()
-            data = {
-                'location':terminal.location,
-                'terminal':terminal.name,
-                'time': reservation.accept_time.strftime("%Y-%m-%d %H:%M:%S")
-            }
+            if(reservation != None and terminal != None):
+                data = {
+                    'location':terminal.location,
+                    'terminal':terminal.name,
+                    'time': reservation.accept_time.strftime("%Y-%m-%d %H:%M:%S")
+                }
 
-            return data
+                return data
+            else:
+                return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
+        
+@app.route("/main_car_load", methods=["POST"])
+def main_car_load():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            user = user_table.query.filter(user_table.id==id).first()
+            if(user != None):
+                data = {
+                    "name":user.name,
+                    "phoneNum":user.phone,
+                    "address":user.address,
+                    "carNum":user.car_num
+                }
+                return data
+            else:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+            
+            
+@app.route("/main_car_modify", methods=["POST"])
+def main_car_modify():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        phone = request.form.get("phoneNum","")
+        address = request.form.get("address","")
+        car_num = request.form.get("carNum","")
+        if(id != "" and phone != "" and address != "" and car_num != ""):
+            user = user_table.query.filter(user_table.id==id).first()
+            if(user != None):
+                user.phone = phone
+                user.address = address
+                user.car_num = car_num
+                db.session.commit()
+                return jsonify({'result':True})
+            else:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+    
+@app.route("/cash", methods=["POST"])
+def cash():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        user = user_table.query.filter(user_table.id==id).first()
+        if(id != "" and user != None):
+            try:
+                cashs = cash_table.query.filter(cash_table.id==id).order_by(cash_table.pay_datetime).all()
+                data = []
+                for cash in cashs:
+                    data.append({
+                        "date":cash.pay_datetime,
+                        "receiver":cash.id,
+                        "result":cash.publish_pay
+                    })
+                return data
+            except:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+
+@app.route("/check", methods=["POST"])
+def check():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        user = user_table.query.filter(user_table.id==id).first()
+        if(id != "" and user != None):
+            try:
+                checks = check_table.query.filter(check_table.id==id).order_by(check_table.request_time).all()
+                data = []
+                for check in checks:
+                    data.append({
+                        "date":check.request_time,
+                        "receiver":check.id,
+                        "result":check.result
+                    })
+                return data
+            except:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+
+@app.route("/receipt", methods=["POST"])
+def receipt():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            receipt = receipt_table.query.filter(receipt_table.id == id).first()
+            container = container_table.query.filter(container_table.container_num == receipt.container_num).first()
+            if(container != None and receipt != None):
+                data = {
+                    "terminalName":container.tn,
+                    "issue":receipt.publish,
+                    "date":receipt.publish_datetime,
+                    "divison":container.in_out,
+                    "containerNum":container.container_num,
+                    "deviceLocation":container.position,
+                    "standard":container.scale,
+                    "fm":container.fm
+                }
+                return data
+            else:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+            
+
 app.run(host="0.0.0.0", port=5000)

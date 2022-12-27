@@ -63,8 +63,8 @@ class reservation_table(db.Model):
     suggestion = db.Column(db.String(20), nullable=True)
 
 class receipt_table(db.Model):
-    container_num = db.Column(db.String(30), primary_key=True, nullable=False)
-    id = db.Column(db.String(20), nullable=False)
+    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    container_num = db.Column(db.String(30), nullable=False)
     publish = db.Column(db.Boolean, nullable=False)
     publish_datetime = db.Column(db.DateTime, nullable=True)
 
