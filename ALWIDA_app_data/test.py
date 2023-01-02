@@ -1,8 +1,8 @@
 import requests
 
 
-# url = "http://localhost:5000/receipt"
-url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
+url = "http://localhost:5000/msg_info"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
 
 # data = {
 #     "name":"test",
@@ -20,7 +20,7 @@ url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receip
 # }
 
 data = {
-    "id":"user2",
+    "id":"user100",
 }
 
 # data = {

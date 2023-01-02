@@ -392,6 +392,28 @@ def receipt():
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
-            
+
+@app.route("/msg_info", methods=["POST"])
+def msg_info():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            try:
+                container_num = reservation_table.query.filter(reservation_table.id==id).first().container_num
+                container = container_table.query.filter(container_table.container_num == container_num).first()
+                
+                data = {
+                    "terminalName":container.tn,
+                    "terminalAbb":container.position,
+                    "scale":container.scale,
+                    "deviceLocation":"test",
+                    "containerNum":container.container_num
+                }
+                
+                return data
+            except:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
 
 app.run(host="0.0.0.0", port=5000)
