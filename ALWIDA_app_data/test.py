@@ -1,27 +1,27 @@
 import requests
 
 
-url = "http://localhost:5000/msg_info"
+url = "http://localhost:5000/dest/recommend"
 # url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
 
 # data = {
-#     "name":"test",
+#     "name":"test1",
 #     "phoneNum":"01012345678",
 #     "address":"부산",
 #     "carNum":"2425",
-#     "id":"test",
-#     "pw":"test",
+#     "id":"test123",
+#     "pw":"test123",
 #     "agreeCheck":True
 # }
 
 # data = {
 #     "id":"user1",
-#     "pw":"user111"
+#     "pw":"user1"
 # }
 
-data = {
-    "id":"user100",
-}
+# data = {
+#     "id":"user100",
+# }
 
 # data = {
 #     "id":"user1",
@@ -42,12 +42,12 @@ data = {
 #     "containerNum":""
 # }
 
-# data = {
-#     "id":"user1",
-#     "phoneNum":"01011111111",
-#     "address":"부산",
-#     "carNum":"2222"
-# }
+data = {
+    "id":"user9",
+    "phoneNum":"01011111111",
+    "address":"부산",
+    "carNum":"123123"
+}
 
 
 res = requests.post(url,data=data)
