@@ -209,7 +209,7 @@ def reservation():
             (reservation_table.tn == select_tn)&
             (reservation_table.accept_time != None)&
             (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
-            # &(reservation_table.accept_time >= func.now())
+            &(reservation_table.accept_time >= func.now())
         ).group_by(
             func.hour(reservation_table.accept_time),
             func.floor(func.minute(reservation_table.accept_time)/30)*10
@@ -222,7 +222,7 @@ def reservation():
             (reservation_table.tn == select_tn)&
             (reservation_table.accept_time != None)&
             (func.date_format(reservation_table.accept_time, '%Y-%m-%d') == func.date_format(func.now(), '%Y-%m-%d'))
-            # &(reservation_table.accept_time >= func.now())
+            &(reservation_table.accept_time >= func.now())
         ).group_by(
             func.hour(reservation_table.accept_time),
             func.floor(func.minute(reservation_table.accept_time)/30)*10
