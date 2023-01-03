@@ -1,7 +1,7 @@
 import random
 import datetime
 from flask import Blueprint, request, jsonify
-from models import user_table, terminal_table, reservation_table, container_table, db
+from models import user_table, terminal_table, reservation_table, container_table, chatting_table, message_table, db
 
 blue_dest = Blueprint("dest", __name__, url_prefix="/dest")
 
@@ -127,6 +127,11 @@ def accept():
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
                 reservation.accept_time = time
                 
+                new_chat = chatting_table(id=id, state=0)
+                new_msg= message_table(id=id, message="운송작업이 생성되었습니다.\n사전반출입정보 승인",time=datetime.datetime.now(), sender=False)
+                
+                db.session.add(new_chat)
+                db.session.add(new_msg)
                 db.session.commit()
                 return jsonify({'result':True})
             except:

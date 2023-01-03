@@ -19,7 +19,8 @@ def receipt():
                     "containerNum":container.container_num,
                     "deviceLocation":container.position,
                     "standard":container.scale,
-                    "fm":container.fm
+                    "fm":container.fm,
+                    "publish":receipt.publish
                 }
                 return data
             else:

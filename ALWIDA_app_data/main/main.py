@@ -41,7 +41,7 @@ def carmod():
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
-        
+
 @blue_main.route("/cash", methods=["POST"])
 def cash():
     if(request.method == "POST"):

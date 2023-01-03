@@ -1,16 +1,16 @@
 import requests
 
 
-url = "http://localhost:5000/dest/recommend"
+url = "http://localhost:5000/msg/send"
 # url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
 
 # data = {
-#     "name":"test1",
+#     "name":"hogbal",
 #     "phoneNum":"01012345678",
 #     "address":"부산",
 #     "carNum":"2425",
-#     "id":"test123",
-#     "pw":"test123",
+#     "id":"hogbal",
+#     "pw":"hogbal",
 #     "agreeCheck":True
 # }
 
@@ -20,16 +20,16 @@ url = "http://localhost:5000/dest/recommend"
 # }
 
 # data = {
-#     "id":"user100",
+#     "id":"user1",
 # }
 
 # data = {
-#     "id":"user1",
+#     "id":"hogbal",
 #     "containerNum":"1111",
 #     "location":"부산신항",
 #     "terminal":"국제신항",
-#     "hour":12,
-#     "minute":36
+#     "hour":6,
+#     "minute":30
 # }
 
 # data = {
@@ -42,14 +42,22 @@ url = "http://localhost:5000/dest/recommend"
 #     "containerNum":""
 # }
 
+# data = {
+#     "id":"user9",
+#     "phoneNum":"01011111111",
+#     "address":"부산",
+#     "carNum":"123123"
+# }
+
 data = {
-    "id":"user9",
-    "phoneNum":"01011111111",
-    "address":"부산",
-    "carNum":"123123"
+    "id":"hogbal",
+    "congestion":True
 }
 
+# files = open('test.jpeg','rb')
+# upload = {'file':files}
+# print(files)
+# res = requests.post(url, data=data, files=upload)
 
 res = requests.post(url,data=data)
-# res = requests.post(url)
 print(res.text)

@@ -8,6 +8,7 @@ from signin import signin
 from destination import destination
 from main import main
 from receipt import receipt
+from check import check
 
 db = {
     'user':'root',
@@ -31,6 +32,7 @@ app.register_blueprint(signup.blue_signup)
 app.register_blueprint(msg.blue_msg)
 app.register_blueprint(destination.blue_dest)
 app.register_blueprint(receipt.blue_receipt)
+app.register_blueprint(check.blue_check)
 
 
 app.run(host="0.0.0.0", port=5000)
