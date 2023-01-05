@@ -1,4 +1,5 @@
 import os
+import configparser
 from flask import Flask
 from models import init_db
 
@@ -10,11 +11,17 @@ from main import main
 from receipt import receipt
 from check import check
 
+config = configparser.ConfigParser()
+config.read('/usr/src/app/config.ini')
+user = config['MariaDB']['user']
+password = config['MariaDB']['password']
+port = int(config['MariaDB']['port'])
+
 db = {
-    'user':'root',
-    'password':'root',
+    'user':user,
+    'password':password,
     'host':'mariadb',
-    'port':3306,
+    'port':port,
     'database':'alwida_db'
 }
 

@@ -76,15 +76,10 @@
       </div>
     </div>
     <div class="div-chatting-send">
-
-        <input type="hidden" name="id" id="id"/>
-        <div style="float:left;width:80%;">
-          <textarea cols="70" rows="1" name="send_text" id="send_text" oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"' style="widht:100%;resize: none; padding: 8px; margin: 20px;max-height: 100px;"></textarea>
-        </div>
-        <div style="float:left;width:20%;">
-          <button id="submit_but" class="chatting-btn" onclick="create_submit()">전송</button>
-        </div>
-
+      <input type="hidden" name="id" id="id"/>
+      <div class="input-div">
+        <textarea name="send_text" id="send_text" placeholder="Press Enter for send message."></textarea>
+      </div>
     </div>
   </div>
 </div>
@@ -291,7 +286,7 @@
     if(event.keyCode === 13) {
       if(!event.shiftKey){
         event.preventDefault();
-        document.getElementById("submit_but").click();
+        create_submit();
       }
     }
   });

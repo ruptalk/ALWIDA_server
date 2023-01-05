@@ -1,7 +1,7 @@
 import requests
 
 
-url = "http://localhost:5000/msg/send"
+url = "http://localhost:5000/signup/id"
 # url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
 
 # data = {
@@ -19,9 +19,9 @@ url = "http://localhost:5000/msg/send"
 #     "pw":"user1"
 # }
 
-# data = {
-#     "id":"user1",
-# }
+data = {
+    "id":"user1",
+}
 
 # data = {
 #     "id":"hogbal",
@@ -49,10 +49,10 @@ url = "http://localhost:5000/msg/send"
 #     "carNum":"123123"
 # }
 
-data = {
-    "id":"hogbal",
-    "congestion":True
-}
+# data = {
+#     "id":"hogbal",
+#     "congestion":True
+# }
 
 # files = open('test.jpeg','rb')
 # upload = {'file':files}
