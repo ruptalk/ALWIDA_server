@@ -39,7 +39,7 @@ def is_login():
 
 @app.after_request
 def after_request(response):
-    response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' https://code.jquery.com/jquery-3.5.1.js https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' http://localhost:8888/ https://code.jquery.com/jquery-3.5.1.js https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js; img-src http://localhost:8888 data:;"
     response.headers["X-Frame-Options"] = "deny"
     return response
 
