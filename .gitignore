@@ -1,5 +1,3 @@
 **/__pycache__/
 **/*.pyc
-img/
-ALWIDA_app_data/json_file/
 .env
