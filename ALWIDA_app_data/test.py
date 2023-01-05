@@ -1,7 +1,7 @@
 import requests
 
 
-url = "http://localhost:5000/msg/send"
+url = "http://localhost:5000/signup/num"
 # url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
 
 # data = {
@@ -19,9 +19,9 @@ url = "http://localhost:5000/msg/send"
 #     "pw":"user1"
 # }
 
-# data = {
-#     "id":"user1",
-# }
+data = {
+    "id":"user1",
+}
 
 # data = {
 #     "id":"hogbal",

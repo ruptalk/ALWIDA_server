@@ -6,8 +6,16 @@ import base64
 import requests
 import json
 import time
+import configparser
 from flask import Blueprint, request, jsonify
 from models import user_table, db
+
+config = configparser.ConfigParser()
+config.read('/usr/src/app/config.ini')
+service_id = config['naver']['service_id']
+access_key = config['naver']['access_key']
+secret_key = config['naver']['secret_key']
+secret_key = bytes(secret_key, 'UTF-8')
 
 blue_signup = Blueprint("signup", __name__, url_prefix="/signup")
 
@@ -50,12 +58,13 @@ def id():
             return jsonify({'result':'error'})
         
         
-def	make_signature(timestamp, access_key, secret_key, uri):
-	method = "POST"
-	message = method + " " + uri + "\n" + timestamp + "\n" + access_key
-	message = bytes(message, 'UTF-8')
-	signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
-	return signingKey
+def	make_signature(timestamp, uri):
+    method = "POST"
+    message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+    message = bytes(message, 'UTF-8')
+
+    signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+    return signingKey
 
 @blue_signup.route("/num", methods=["POST"])
 def num():
@@ -65,12 +74,9 @@ def num():
             timestamp = int(time.time() * 1000)
             timestamp = str(timestamp)
 
-            service_id = "ncp:sms:kr:297891290516:alwida"
-            access_key = "RbrAFWVlEomah3J1n0Aa"
-            secret_key = "OPgU8MHca08obQ1NjxPfS0o16LNzf6XFej3bB1OG"
-            secret_key = bytes(secret_key, 'UTF-8')
-            uri = f"https://sens.apigw.ntruss.com/sms/v2/services/{service_id}/messages"
-            print(uri)
+            url = "https://sens.apigw.ntruss.com"
+            uri = f"/sms/v2/services/{service_id}/messages"
+            
             messages = {
                 "subject":"test",
                 "content":"test",
@@ -89,10 +95,10 @@ def num():
                 'Content-Type':'application/json; charset=utf-8',
                 'x-ncp-apigw-timestamp':timestamp,
                 'x-ncp-iam-access-key':access_key,
-                'x-ncp-apigw-signature-v2':make_signature(timestamp, access_key, secret_key, uri)
+                'x-ncp-apigw-signature-v2':make_signature(timestamp, uri)
             }
             
-            res = requests.post(uri, headers=headers, data=body)
+            res = requests.post(url+uri, headers=headers, data=body)
             print(res.content)
             return "test"
     else:
