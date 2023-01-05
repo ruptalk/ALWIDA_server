@@ -1,16 +1,23 @@
 import os
 import base64
+import configparser
 from flask import Flask, request, render_template, session, url_for, jsonify
 from sqlalchemy import func, inspect
 from datetime import datetime
 import uuid
 from models import admin_table, user_table, terminal_table, container_table, reservation_table, receipt_table, cash_table, check_table, chatting_table, message_table, init_db
 
+config = configparser.ConfigParser()
+config.read('/usr/src/app/config.ini')
+user = config['MariaDB']['user']
+password = config['MariaDB']['password']
+port = int(config['MariaDB']['port'])
+
 db = {
-    'user':'root',
-    'password':'root',
+    'user':user,
+    'password':password,
     'host':'mariadb',
-    'port':3306,
+    'port':port,
     'database':'alwida_db'
 }
 
