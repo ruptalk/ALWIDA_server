@@ -27,4 +27,9 @@ services:
       - 3306:3306
     environment:
       - TZ=Asia/Seoul
-    
+      - ALLOW_EMPTY_PASSWORD=no
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+    restart: always
