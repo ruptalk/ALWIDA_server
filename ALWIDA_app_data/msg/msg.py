@@ -83,3 +83,23 @@ def send():
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'}) 
+        
+@blue_msg.route("/coordinate", methods=["POST"])
+def coordinate():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            try:
+                tn = reservation_table.query.filter(reservation_table.id==id).first().tn
+                terminal = terminal_table.query.filter(terminal_table.tn==tn).first()
+                
+                data = {
+                    'longitude':terminal.longitude,
+                    'latitude':terminal.latitude
+                }
+                
+                return data
+            except:
+                return jsonify({'result':False})
+        else:
+            return jsonify({'result':'error'}) 
