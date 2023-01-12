@@ -46,14 +46,14 @@ def container_state():
     if(request.method == "POST"):
         containerNum = request.form.get("containerNum","")
         if(containerNum != ""):
-            container = container_table.query.filter(container_table.container_num==containerNum).first()
-            if(container != None):
+            try:
+                container = container_table.query.filter(container_table.container_num==containerNum).first()
                 if(container.in_out == True):
                     data = "반입"
                 else:
                     data = "반출"
                 return jsonify({'result':data}) 
-            else:
+            except:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
@@ -63,10 +63,10 @@ def car():
     if(request.method == "POST"):
         id = request.form.get("id","")
         if(id != ""):
-            user = user_table.query.filter(user_table.id==id).first()
-            if(user != None):
+            try:
+                user = user_table.query.filter(user_table.id==id).first()
                 return jsonify({'result':user.car_num}) 
-            else:
+            except:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
@@ -104,10 +104,10 @@ def recommend():
     if(request.method == "POST"):
         id = request.form.get("id","")
         if(id != ""):
-            suggestion = reservation_table.query.filter(reservation_table.id==id).first().suggestion.split(',')
-            if(suggestion != None):
+            try:
+                suggestion = reservation_table.query.filter(reservation_table.id==id).first().suggestion.split(',')
                 return suggestion
-            else:
+            except:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
@@ -145,9 +145,9 @@ def reservation_state():
     if(request.method == "POST"):
         id = request.form.get("id","")
         if(id != ""):
-            reservation = reservation_table.query.filter(reservation_table.id==id).first()
-            terminal = terminal_table.query.filter(terminal_table.tn==reservation.tn).first()
-            if(reservation != None and terminal != None):
+            try:
+                reservation = reservation_table.query.filter(reservation_table.id==id).first()
+                terminal = terminal_table.query.filter(terminal_table.tn==reservation.tn).first()
                 data = {
                     'location':terminal.location,
                     'terminal':terminal.name,
@@ -155,7 +155,7 @@ def reservation_state():
                 }
 
                 return data
-            else:
+            except:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})

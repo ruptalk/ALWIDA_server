@@ -10,10 +10,10 @@ def login():
         pw = request.form.get("pw","")
         
         if(id != "" and pw != ""):
-            user = user_table.query.filter((user_table.id==id) & (user_table.pw==pw)).first()
-            if(user != None):
+            try:
+                user = user_table.query.filter((user_table.id==id) & (user_table.pw==pw)).first()
                 return jsonify({'result':True})
-            else:
+            except:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
