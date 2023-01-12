@@ -8,14 +8,15 @@ blue_msg = Blueprint("msg", __name__, url_prefix="/msg")
 @blue_msg.route("/info", methods=["POST"])
 def info():
     if(request.method == "POST"):
-        id = request.form.get("id")
+        id = request.form.get("id","")
         if(id != ""):
             try:
                 container_num = reservation_table.query.filter(reservation_table.id==id).first().container_num
                 container = container_table.query.filter(container_table.container_num == container_num).first()
+                terminal = terminal_table.query.filter(terminal_table.tn==container.tn).first()
                 
                 data = {
-                    "terminalName":container.name,
+                    "terminalName":terminal.name,
                     "terminalAbb":container.tn,
                     "scale":container.scale,
                     "deviceLocation":container.position,

@@ -38,6 +38,8 @@ class user_table(db.Model):
 class terminal_table(db.Model):
     tn = db.Column(db.String(30), primary_key=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
     location = db.Column(db.String(30), nullable=False)
     car_amount = db.Column(db.Integer, nullable=False)
     easy = db.Column(db.Integer, default=0)

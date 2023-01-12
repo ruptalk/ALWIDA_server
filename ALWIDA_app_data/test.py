@@ -1,16 +1,16 @@
 import requests
 
 
-# url = "http://localhost:5000/signup/id"
-url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup/id"
+url = "http://localhost:5000/check"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup"
 
 # data = {
-#     "name":"hogbal",
+#     "name":"test",
 #     "phoneNum":"01012345678",
 #     "address":"부산",
 #     "carNum":"2425",
-#     "id":"hogbal",
-#     "pw":"hogbal",
+#     "id":"test",
+#     "pw":"test",
 #     "agreeCheck":True
 # }
 
@@ -20,7 +20,7 @@ url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup
 # }
 
 data = {
-    "id":"user1",
+    "id":"test",
 }
 
 # data = {
@@ -50,14 +50,16 @@ data = {
 # }
 
 # data = {
-#     "id":"hogbal",
-#     "congestion":True
+#     "id":"user1",
+#     "numOfCar":True
 # }
 
-# files = open('test.jpeg','rb')
-# upload = {'file':files}
-# print(files)
-# res = requests.post(url, data=data, files=upload)
+files = open('test.jpeg','rb')
+upload = {'file':files}
+files=b'test'
+print(files)
+res = requests.post(url, data=data, files=upload)
 
-res = requests.post(url,data=data)
+# res = requests.post(url,data=data)
 print(res.text)
+print(res.request.body)
