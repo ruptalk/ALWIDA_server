@@ -8,9 +8,9 @@ def receipt():
     if(request.method == "POST"):
         id = request.form.get("id","")
         if(id != ""):
-            receipt = receipt_table.query.filter(receipt_table.id == id).first()
-            container = container_table.query.filter(container_table.container_num == receipt.container_num).first()
-            if(container != None and receipt != None):
+            try:
+                receipt = receipt_table.query.filter(receipt_table.id == id).first()
+                container = container_table.query.filter(container_table.container_num == receipt.container_num).first()
                 data = {
                     "terminalName":container.tn,
                     "issue":receipt.publish,
@@ -23,7 +23,7 @@ def receipt():
                     "publish":receipt.publish
                 }
                 return data
-            else:
+            except:
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})

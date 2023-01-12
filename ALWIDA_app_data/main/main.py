@@ -8,8 +8,8 @@ def info():
     if(request.method == "POST"):
         id = request.form.get("id","")
         if(id != ""):
-            user = user_table.query.filter(user_table.id==id).first()
-            if(user != None):
+            try:
+                user = user_table.query.filter(user_table.id==id).first()
                 data = {
                     "name":user.name,
                     "phoneNum":user.phone,
@@ -17,7 +17,7 @@ def info():
                     "carNum":user.car_num
                 }
                 return data
-            else:
+            except:
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
@@ -30,14 +30,14 @@ def carmod():
         address = request.form.get("address","")
         car_num = request.form.get("carNum","")
         if(id != "" and phone != "" and address != "" and car_num != ""):
-            user = user_table.query.filter(user_table.id==id).first()
-            if(user != None):
+            try:
+                user = user_table.query.filter(user_table.id==id).first()
                 user.phone = phone
                 user.address = address
                 user.car_num = car_num
                 db.session.commit()
                 return jsonify({'result':True})
-            else:
+            except:
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
