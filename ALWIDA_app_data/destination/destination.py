@@ -84,13 +84,16 @@ def reservation():
         if(id != "" and containerNum!= "" and location != "" and terminal != "" and hour != "" and minute != ""):        
             try:
                 tn = terminal_table.query.with_entities(terminal_table.tn).filter((terminal_table.location==location)&(terminal_table.name==terminal)).first()[0]
-            
+
                 now = datetime.date.today()
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
             
                 new_reservation = reservation_table(id=id, container_num=containerNum, tn=tn, request_time=time,accept_time=None, suggestion=None)
-            
+
+                new_chat = chatting_table(id=id, state=0)
+                
                 db.session.add(new_reservation)
+                db.session.add(new_chat)
                 db.session.commit()
             
                 return jsonify({'result':True})
@@ -127,7 +130,7 @@ def accept():
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
                 reservation.accept_time = time
                 
-                new_chat = chatting_table(id=id, state=0)
+                new_chat = chatting_table(id=id, state=1)
                 new_msg= message_table(id=id, message="운송작업이 생성되었습니다.\n사전반출입정보 승인",time=datetime.datetime.now(), sender=False)
                 
                 db.session.add(new_chat)
