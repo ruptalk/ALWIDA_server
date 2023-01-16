@@ -48,13 +48,13 @@ class terminal_table(db.Model):
 
 class container_table(db.Model):
     container_num = db.Column(db.String(30), primary_key=True, nullable=False)
-    id = db.Column(db.String(20), nullable=False)
+    id = db.Column(db.String(20), nullable=True)
     tn = db.Column(db.String(30), nullable=False)
     scale = db.Column(db.String(30), nullable=False)
     fm = db.Column(db.String(30), nullable=False)
     position = db.Column(db.String(30), nullable=True)
     contain_last_time = db.Column(db.DateTime, nullable=False)
-    in_out = db.Column(db.Boolean, nullable=False)
+    in_out = db.Column(db.Boolean, nullable=True)
 
 class reservation_table(db.Model):
     id = db.Column(db.String(20), primary_key=True, nullable=False)

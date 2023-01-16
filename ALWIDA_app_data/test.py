@@ -2,7 +2,7 @@ import requests
 
 
 # url = "http://localhost:5000/msg/resChange"
-url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receipt"
+url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signin"
 
 # data = {
 #     "name":"test",
@@ -14,23 +14,23 @@ url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/receip
 #     "agreeCheck":True
 # }
 
-# data = {
-#     "id":"test",
-#     "pw":"test"
-# }
-
-# data = {
-#     "id":"test",
-# }
-
 data = {
     "id":"test",
-    "containerNum":"1111",
-    "location":"부산신항",
-    "terminal":"국제신항",
-    "hour":6,
-    "minute":30
+    "pw":"test"
 }
+
+# data = {
+#     "id":"test",
+# }
+
+# data = {
+#     "id":"test",
+#     "containerNum":"1111",
+#     "location":"부산신항",
+#     "terminal":"국제신항",
+#     "hour":6,
+#     "minute":30
+# }
 
 # data = {
 #     "id":"user1",

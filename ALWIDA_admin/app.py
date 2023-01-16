@@ -153,6 +153,25 @@ def container_update():
         return alert("완료!")
     except:
         return alert("에러발생")
+    
+@app.route("/container_add", methods=["POST"])
+def container_add():
+    if not is_login():
+        return alert("로그인부터 해주세요!","/signin")
+    try:
+        container_num = request.form.get("container_num","")
+        position = request.form.get("position","")
+        scale = request.form.get("scale","")
+        fm = request.form.get("fm","")
+        tn = request.form.get("tn","")
+        
+        new_container = container_table(container_num=container_num, id=None, tn=tn, scale=scale, fm=fm, position=position, contain_last_time=datetime.now(), in_out=None)
+        db.session.add(new_container)
+        db.session.commit()
+        
+        return alert("완료!")
+    except:
+        return alert("에러발생")
 
 def congestion(count):
     usr = session.get("info")

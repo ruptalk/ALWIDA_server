@@ -113,7 +113,9 @@ def resChange():
                 reservation.accept_time = time
                 msg = f"예약 변경 요청 완료"
                 new_msg = message_table(id=id, message=msg, time=now, sender=False)
+                new_chat = chatting_table(id=id, state=3)
                 db.session.add(new_msg)
+                db.session.add(new_chat)
                 db.session.commit()
                             
                 data = {
@@ -136,7 +138,9 @@ def departCancle():
                 now = datetime.datetime.now()
                 msg = "출발 취소 요청"
                 new_msg = message_table(id=id, message=msg, time=now, sender=True)
+                new_chat = chatting_table(id=id, state=4)
                 db.session.add(new_msg)
+                db.session.add(new_chat)
                 db.session.commit()
                 
                 return jsonify({'result':True})
@@ -153,7 +157,9 @@ def entryRequest():
             now = datetime.datetime.now()
             msg = "게이트 진입요청"
             new_msg = message_table(id=id, message=msg, time=now, sender=True)
+            new_chat = chatting_table(id=id, state=5)
             db.session.add(new_msg)
+            db.session.add(new_chat)
             db.session.commit()
             
             return jsonify({'result':True})
