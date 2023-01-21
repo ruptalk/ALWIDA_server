@@ -12,7 +12,10 @@ def login():
         if(id != "" and pw != ""):
             try:
                 user = user_table.query.filter((user_table.id==id) & (user_table.pw==pw)).first()
-                return jsonify({'result':True})
+                if(user != None):
+                    return jsonify({'result':True})
+                else:
+                    return jsonify({'result':False})
             except:
                 return jsonify({'result':False})
         else:
