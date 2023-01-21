@@ -49,10 +49,10 @@ def id():
         id = request.form.get("id","")
         
         if(id != ""):
-            try:
-                user = user_table.query.filter(user_table.id==id).first()
+            user = user_table.query.filter(user_table.id==id).first()
+            if(user == None):
                 return jsonify({'result':True})
-            except:
+            else:
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})

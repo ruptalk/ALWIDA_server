@@ -4,7 +4,7 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 
-<form action="{{ url_for('signin') }}" method="post" class="form-layout">
+<form action="{{ url_for('acc.signin') }}" method="post" class="form-layout">
     <div class="form-head">
         <div class="form-logo">
             <img src="{{ url_for('static', filename='assets/logo.ico') }}" class="form-img" />
@@ -23,7 +23,7 @@
             <input id="pw" type="password" name="pw" placeholder="비밀번호">
         </div>
         <div>
-            <a href="{{ url_for('signup') }}" class="form-a">회원가입</a><br>
+            <a href="{{ url_for('acc.signup') }}" class="form-a">회원가입</a><br>
             <input type="submit" class="form-submit" value="로그인" />
         </div>
     </div>

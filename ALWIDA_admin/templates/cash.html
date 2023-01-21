@@ -44,7 +44,7 @@
 <div id="myModal" class="modal">
   <div class="modal-cash">
     <span class="close">&times;</span>
-    <form action="{{ url_for('cash') }}" method="post">
+    <form action="{{ url_for('cash.cash') }}" method="post">
       <input type="hidden" id="id" name="id" />
       <input type="hidden" id="container_num" name="container_num" />
       <h2 id="h2_num">현금수납 발급</h2>

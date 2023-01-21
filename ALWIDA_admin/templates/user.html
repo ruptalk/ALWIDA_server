@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
-<form action="{{ url_for("user_info") }}" id="group_form" method="GET">
+<form action="{{ url_for("user.user") }}" id="group_form" method="GET">
     <div style="float: left;">
       <select name="select_tn" onchange="this.form.submit()">
         {% for tn in tns%}
@@ -59,7 +59,7 @@
 
 <h3>방문 트러커</h3>
 
-<form action="{{ url_for("user_info") }}" id="date_form" method="GET">
+<form action="{{ url_for("user.user") }}" id="date_form" method="GET">
   <input type="date" name="date" onchange="this.form.submit()" value="{{date}}">
 </form><br>
 
@@ -89,7 +89,7 @@
 <div id="myModal" class="modal">
   <div class="modal-receipt">
     <span class="close">&times;</span>
-    <form action="{{ url_for('receipt') }}" method="post">
+    <form action="{{ url_for('receipt.receipt') }}" method="post">
       <input type="hidden" id="id" name="id" />
       <input type="hidden" id="container_num" name="container_num" />
       <h2 id="h2_num">인수도증 발급</h2>
