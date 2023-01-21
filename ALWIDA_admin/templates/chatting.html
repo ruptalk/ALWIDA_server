@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
-<form action="{{ url_for("chatting") }}" id="group_form" method="GET">
+<form action="{{ url_for("chatting.chatting") }}" id="group_form" method="GET">
   <div style="float: left;">
     <select name="select_tn" onchange="this.form.submit()">
       {% for tn in tns%}
@@ -104,7 +104,7 @@
 
     $.ajax({
       type: 'POST',
-      url: '{{ url_for("chatting_update") }}',
+      url: '{{ url_for("chatting.update") }}',
       data: JSON.stringify(data),
       dataType : 'JSON',
       contentType: 'application/json',
@@ -127,6 +127,7 @@
 
               var new_msg = document.createElement("p");
               new_msg.setAttribute("class","msg");
+              msg["message"] = msg["message"].replace(/\n/g,'<br>');
               new_msg.innerHTML = msg["message"];
 
               var time = document.createElement("span");
@@ -148,8 +149,9 @@
 
               var new_msg = document.createElement("p");
               new_msg.setAttribute("class","msg");
+              msg["message"] = msg["message"].replace(/\n/g,'<br>');
               new_msg.innerHTML = msg["message"];
-
+              
               var time = document.createElement("span");
               time.setAttribute("class", "time");
               time.innerHTML = msg["time"];
@@ -206,7 +208,7 @@
 
           $.ajax({
             type: 'POST',
-            url: '{{ url_for("chatting") }}',
+            url: '{{ url_for("chatting.chatting") }}',
             data: JSON.stringify(data),
             dataType : 'JSON',
             contentType: 'application/json',
@@ -229,6 +231,7 @@
 
                     var new_msg = document.createElement("p");
                     new_msg.setAttribute("class","msg");
+                    msg["message"] = msg["message"].replace(/\n/g,'<br>');
                     new_msg.innerHTML = msg["message"];
 
                     var time = document.createElement("span");
@@ -250,6 +253,7 @@
       
                     var new_msg = document.createElement("p");
                     new_msg.setAttribute("class","msg");
+                    msg["message"] = msg["message"].replace(/\n/g,'<br>');
                     new_msg.innerHTML = msg["message"];
       
                     var time = document.createElement("span");

@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
-<form action="{{ url_for("index") }}" id="group_form" method="GET">
+<form action="{{ url_for("terminal.terminal") }}" id="group_form" method="GET">
   <div style="float: left;">
     <select name="select_tn" onchange="this.form.submit()">
       {% for tn in tns%}
@@ -22,7 +22,7 @@
   </div>
 </form>
 
-<form action="{{ url_for("terminal_update") }}" id="group_form" method="POST">
+<form action="{{ url_for("terminal.terminal_update") }}" id="group_form" method="POST">
   <div style="float: right;">
     <input type="submit" value="업데이트" />
   </div><br><p>
@@ -91,7 +91,7 @@
 <div id="modify" class="modal">
   <div class="modal-terminal">
     <span id="modify_close" class="close">&times;</span>
-    <form action="{{ url_for('container_update') }}" method="post">
+    <form action="{{ url_for('container.container_update') }}" method="post">
       <h2 id="h2_num">컨테이너 정보 입력</h2>
       <div class="div-terminal">
         <label for="container_num" class="modal-label">컨테이너번호</label>
@@ -117,7 +117,7 @@
 <div id="add" class="modal">
   <div class="modal-terminal">
     <span id="add_close" class="close">&times;</span>
-    <form action="{{ url_for('container_add') }}" method="post">
+    <form action="{{ url_for('container.container_add') }}" method="post">
       <h2 id="h2_num">컨테이너 정보 입력</h2>
       <input type="hidden" id="tn" name="tn" value="{{select_tn}}"/>
       <div class="div-terminal">

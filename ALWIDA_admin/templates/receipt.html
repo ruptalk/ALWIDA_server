@@ -43,7 +43,7 @@
 <div id="myModal" class="modal">
   <div class="modal-receipt">
     <span class="close">&times;</span>
-    <form action="{{ url_for('receipt') }}" method="post">
+    <form action="{{ url_for('receipt.receipt') }}" method="post">
       <input type="hidden" id="id" name="id" />
       <input type="hidden" id="container_num" name="container_num" />
       <h2 id="h2_num">인수도증 발급</h2>

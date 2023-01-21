@@ -20,13 +20,13 @@
                     <img src='{{url_for("static", filename="assets/logo.ico")}}' style="height:50px !important; width:auto !important">&nbsp; ALWIDA</div>
 
                 <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('index') }}">터미널 정보</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('reservation') }}">예약 요청 수락</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('receipt') }}">인수도증 발급 현황</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('cash') }}">현금 수납 상황</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('check') }}">검사내역 현황</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('user_info') }}">트러커 정보</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('chatting') }}">채팅</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('terminal.terminal') }}">터미널 정보</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('reservation.reservation') }}">예약 요청 수락</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('receipt.receipt') }}">인수도증 발급 현황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('cash.cash') }}">현금 수납 상황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('check.check') }}">검사내역 현황</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('user.user') }}">트러커 정보</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('chatting.chatting') }}">채팅</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
@@ -39,10 +39,10 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                                 {% if check == None %}
-                                <li class="nav-item"><a class="nav-link" href="{{ url_for('signin') }}">로그인</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ url_for('acc.signin') }}">로그인</a></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link">{{ usr["tn"] }} {{ usr["name"] }} 관리자님</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}">로그아웃</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ url_for('acc.signout') }}">로그아웃</a></li>
                                 {% endif %}
                             </ul>
                         </div>
