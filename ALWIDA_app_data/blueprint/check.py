@@ -11,7 +11,7 @@ def check():
         img = request.files['file']
         if(id != ""):
             try:
-                new_check = check_table(id=id, request_time=datetime.datetime.now(), img=img.read(), result=0)
+                new_check = check_table(idx=None, id=id, request_time=datetime.datetime.now(), img=img.read(), result=0)
                 db.session.add(new_check)
                 db.session.commit()
 

@@ -27,6 +27,7 @@
 <table id='check-wait-table' class="hover order-column">
   <thead>
     <tr>
+      <th>idx</th>
       <th>일시</th>
       <th>트러커</th>
       <th>터미널 약칭</th>
@@ -38,13 +39,14 @@
   <tbody>
       {% for check_wait in check_waits%}
       <tr>
-        <td>{{check_wait[1]}}</td>
         <td>{{check_wait[0]}}</td>
+        <td>{{check_wait[2]}}</td>
+        <td>{{check_wait[1]}}</td>
+        <td>{{check_wait[6]}}</td>
         <td>{{check_wait[5]}}</td>
-        <td>{{check_wait[4]}}</td>
-        {% if check_wait[3] == 0 %}
+        {% if check_wait[4] == 0 %}
         <td>수신대기</td>
-        {% elif check_wait[3] == 1 %}
+        {% elif check_wait[4] == 1 %}
         <td>수신완료</td>
         {% else %}
         <td>보류</td>
@@ -60,6 +62,7 @@
 <table id='check-result-table' class="hover order-column">
   <thead>
     <tr>
+      <th>idx</th>
       <th>일시</th>
       <th>트러커</th>
       <th>터미널 약칭</th>
@@ -70,6 +73,7 @@
   <tbody>
       {% for check_result in check_results %}
       <tr>
+        <td>{{check_result.idx}}</td>
         <td>{{check_result.request_time}}</td>
         <td>{{check_result.id}}</td>
         <td>{{check_result.tn}}</td>

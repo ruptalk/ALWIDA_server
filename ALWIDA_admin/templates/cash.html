@@ -11,6 +11,7 @@
 <table id='cash-table' class="hover order-column">
   <thead>
     <tr>
+      <th>idx</th>
       <th>트러커</th>
       <th>컨테이너 번호</th>
       <th>지급일시</th>
@@ -20,6 +21,7 @@
   <tbody>
       {% for cash in cashs%}
       <tr>
+        <td>{{cash.idx}}</td>
         <td>{{cash.id}}</td>
         <td>{{cash.container_num}}</td>
         <td>
@@ -82,8 +84,8 @@
   
         row.onclick = function(){ 
           return function(){ 
-            var id = this.cells[0].innerHTML; 
-            var container_num = this.cells[1].innerHTML;
+            var id = this.cells[1].innerHTML; 
+            var container_num = this.cells[2].innerHTML;
 
             document.getElementById('id').value = id;
             document.getElementById('container_num').value = container_num;

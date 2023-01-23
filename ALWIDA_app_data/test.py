@@ -1,8 +1,8 @@
 import requests
 
 
-# url = "http://localhost:5000/msg/resChange"
-url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signin"
+url = "http://localhost:5000/signup/id"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup/id"
 
 # data = {
 #     "name":"test",
@@ -15,8 +15,8 @@ url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signin
 # }
 
 data = {
-    "id":"test",
-    "pw":"test"
+    "id":"user1",
+    "pw":"asdf"
 }
 
 # data = {

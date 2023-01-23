@@ -3,13 +3,7 @@ import configparser
 from flask import Flask
 from models import init_db
 
-from msg import msg
-from signup import signup
-from signin import signin
-from destination import destination
-from main import main
-from receipt import receipt
-from check import check
+from blueprint import msg, signup, signin, destination, main, receipt, check
 
 config = configparser.ConfigParser()
 config.read('/usr/src/app/config.ini')
