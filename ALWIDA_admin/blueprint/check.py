@@ -24,18 +24,18 @@ def check():
         usr = session.get("info")
         select_tn = request.args.get("select_tn",usr["tn"])
         check_wait = check_table.query.join(container_table, container_table.id==check_table.id)\
-                                                            .with_entities(check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
+                                                            .with_entities(check_table.idx, check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
                                                             .filter((container_table.tn==select_tn) & ((check_table.result==0) | (check_table.result==1) | (check_table.result==2))).all()
                                                                        
         check_result = check_table.query.join(container_table, container_table.id==check_table.id)\
-                                                            .with_entities(check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
+                                                            .with_entities(check_table.idx, check_table.id, check_table.request_time, check_table.img, check_table.result, container_table.container_num, container_table.tn)\
                                                             .filter((container_table.tn==select_tn) & ((check_table.result==3) | (check_table.result==4))).all()
         
         check_wait = [list(x) for x in check_wait]
         
         for data in check_wait:
-            data[2] = base64.b64encode(data[2])
-            data[2] = data[2].decode() 
+            data[3] = base64.b64encode(data[3])
+            data[3] = data[3].decode() 
         
         return render_template('check.html', check_waits=check_wait,check_results=check_result, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
     elif(request.method=="POST"):

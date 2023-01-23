@@ -71,13 +71,15 @@ class receipt_table(db.Model):
     publish_datetime = db.Column(db.DateTime, nullable=True)
 
 class cash_table(db.Model):
-    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    idx = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(20), nullable=False)
     container_num = db.Column(db.String(30), nullable=False)
     publish_pay = db.Column(db.Boolean, nullable=False)
     pay_datetime = db.Column(db.DateTime, nullable=True)
 
 class check_table(db.Model):
-    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    idx = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(20), nullable=False)
     request_time = db.Column(db.DateTime, nullable=False)
     img = db.Column(db.LargeBinary, nullable=False)
     result = db.Column(db.Integer, nullable=False)

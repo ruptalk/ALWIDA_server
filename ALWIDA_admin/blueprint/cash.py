@@ -25,8 +25,9 @@ def cash():
     elif(request.method=="POST"):
         id = request.form.get("id","")
         container_num = request.form.get("container_num","")
-        
-        cash = cash_table.query.filter((cash_table.id==id)&(cash_table.container_num==container_num)).first()
+        print(id)
+        print(container_num)
+        cash = cash_table.query.filter((cash_table.id==id)&(cash_table.container_num==container_num)).order_by(cash_table.idx.desc()).first()
         cash.publish_pay = True
         cash.pay_datetime = datetime.now()
         db.session.commit()
