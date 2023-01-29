@@ -42,6 +42,12 @@ def carmod():
         else:
             return jsonify({'result':'error'})
 
+def cash_convert(value):
+    if(value):
+        return "수납완료"
+    else:
+        return "미정산"
+
 @blue_main.route("/cash", methods=["POST"])
 def cash():
     if(request.method == "POST"):
@@ -51,18 +57,32 @@ def cash():
             try:
                 cashs = cash_table.query.filter(cash_table.id==id).order_by(cash_table.pay_datetime).all()
                 data = []
-                for cash in cashs:
+                for i, cash in enumerate(cashs):
                     data.append({
-                        "date":cash.pay_datetime,
+                        "id":i+1,
+                        "date":cash.pay_datetime.strftime("%y.%m.%d %H.%M"),
                         "receiver":cash.id,
-                        "result":cash.publish_pay
+                        "result":cash_convert(cash.publish_pay)
                     })
                 return data
             except:
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
-        
+
+
+def check_convert(value):
+    if(value == 0):
+        return "수신대기"
+    elif(value == 1):
+        return "수신완료"
+    elif(value == 2):
+        return "보류"
+    elif(value == 3):
+        return "검사합격"
+    else:
+        return "검사불합격"
+
 @blue_main.route("/check", methods=["POST"])
 def check():
     if(request.method == "POST"):
@@ -72,11 +92,12 @@ def check():
             try:
                 checks = check_table.query.filter(check_table.id==id).order_by(check_table.request_time).all()
                 data = []
-                for check in checks:
+                for i, check in enumerate(checks):
                     data.append({
-                        "date":check.request_time,
+                        "id":i+1,
+                        "date":check.request_time.strftime("%y.%m.%d %H.%M"),
                         "receiver":check.id,
-                        "result":check.result
+                        "result":check_convert(check.result)
                     })
                 return data
             except:

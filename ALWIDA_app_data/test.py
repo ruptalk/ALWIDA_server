@@ -1,8 +1,8 @@
 import requests
 
 
-url = "http://localhost:5000/signup/id"
-# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/signup/id"
+url = "http://localhost:5000/main/check"
+# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/main/carmod"
 
 # data = {
 #     "name":"test",
@@ -42,12 +42,12 @@ data = {
 #     "containerNum":"1111"
 # }
 
-# data = {
-#     "id":"test",
-#     "phoneNum":"01011111111",
-#     "address":"부산",
-#     "carNum":"123123"
-# }
+data = {
+    "id":"user1",
+    "phoneNum":"01011111111",
+    "address":"부산",
+    "carNum":"123123"
+}
 
 # data = {
 #     "id":"user5",
