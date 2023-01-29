@@ -41,8 +41,6 @@ def check():
     elif(request.method=="POST"):
         id = request.form.get("id")
         type = request.form.get("type")
-        print(id)
-        print(type)
         
         check = check_table.query.filter(check_table.id==id).first()
         if(type=="pass"):

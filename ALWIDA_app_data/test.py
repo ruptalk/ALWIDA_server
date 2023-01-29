@@ -1,8 +1,8 @@
 import requests
 
 
-url = "http://localhost:5000/main/check"
-# url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/main/carmod"
+# url = "http://localhost:5000/main/check"
+url = "http://ec2-18-179-207-27.ap-northeast-1.compute.amazonaws.com:5000/main/check"
 
 # data = {
 #     "name":"test",
