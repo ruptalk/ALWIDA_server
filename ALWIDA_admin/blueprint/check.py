@@ -35,7 +35,7 @@ def check():
         
         for data in check_wait:
             data[3] = base64.b64encode(data[3])
-            data[3] = data[3].decode() 
+            data[3] = data[3].decode()
         
         return render_template('check.html', check_waits=check_wait,check_results=check_result, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
     elif(request.method=="POST"):

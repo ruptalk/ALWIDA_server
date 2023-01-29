@@ -51,7 +51,7 @@
         {% else %}
         <td>보류</td>
         {% endif %}
-        <td style="display:none;">{{check_wait[2]}}</td>
+        <td style="display:none;">{{check_wait[3]}}</td>
     </tr>
       {% endfor %}
   </tbody>
@@ -172,8 +172,8 @@
       row.onclick = function(){ 
         return function(){ 
           var id = this.cells[1].innerHTML;
-          var container_num = this.cells[3].innerHTML;
-          var img = this.cells[5].innerHTML;
+          var container_num = this.cells[4].innerHTML;
+          var img = this.cells[6].innerHTML;
 
           document.getElementById("id").value = id;
           document.getElementById('h2_num').innerHTML = "컨테이너 번호 : " + container_num;
