@@ -60,13 +60,14 @@ def cash():
                 for i, cash in enumerate(cashs):
                     data.append({
                         "id":i+1,
-                        "date":cash.pay_datetime.strftime("%y.%m.%d %H.%M"),
+                        "date":cash.pay_datetime.strftime("%y.%m.%d %H.%M") if(cash.pay_datetime != None) else cash.pay_datetime,
                         "receiver":cash.id,
                         "result":cash_convert(cash.publish_pay)
                     })
                 return data
-            except:
-                return jsonify({'result':False}) 
+            except Exception as e:
+                print(e)
+                return jsonify({'result':False})
         else:
             return jsonify({'result':'error'})
 
@@ -95,7 +96,7 @@ def check():
                 for i, check in enumerate(checks):
                     data.append({
                         "id":i+1,
-                        "date":check.request_time.strftime("%y.%m.%d %H.%M"),
+                        "date":check.request_time.strftime("%y.%m.%d %H.%M") if(check.requet_time != None) else check.request_time,
                         "receiver":check.id,
                         "result":check_convert(check.result)
                     })

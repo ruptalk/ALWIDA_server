@@ -15,7 +15,7 @@ def receipt():
                     "terminalName":container.tn,
                     "issue":receipt.publish,
                     "date":receipt.publish_datetime,
-                    "divison":container.in_out,
+                    "divison":"반입" if(container.in_out) else "반출",
                     "containerNum":container.container_num,
                     "deviceLocation":container.position,
                     "standard":container.scale,
