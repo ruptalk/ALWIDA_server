@@ -96,12 +96,13 @@ def check():
                 for i, check in enumerate(checks):
                     data.append({
                         "id":i+1,
-                        "date":check.request_time.strftime("%y.%m.%d %H.%M") if(check.requet_time != None) else check.request_time,
+                        "date":check.request_time.strftime("%y.%m.%d %H.%M") if(check.request_time != None) else check.request_time,
                         "receiver":check.id,
                         "result":check_convert(check.result)
                     })
                 return data
-            except:
+            except Exception as e:
+                print(e)
                 return jsonify({'result':False}) 
         else:
             return jsonify({'result':'error'})
