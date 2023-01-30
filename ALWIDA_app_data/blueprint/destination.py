@@ -78,14 +78,19 @@ def reservation():
         containerNum = request.form.get("containerNum","")
         location = request.form.get("location","")
         terminal = request.form.get("terminal","")
+        ampm = request.form.get("ampm","")
         hour = request.form.get("hour","")
         minute = request.form.get("minute","")
         
-        if(id != "" and containerNum!= "" and location != "" and terminal != "" and hour != "" and minute != ""):        
+        if(id != "" and containerNum!= "" and location != "" and terminal != "" and ampm!= "" and hour != "" and minute != ""):        
             try:
                 tn = terminal_table.query.with_entities(terminal_table.tn).filter((terminal_table.location==location)&(terminal_table.name==terminal)).first()[0]
 
                 now = datetime.date.today()
+                
+                if(ampm == "오후"):
+                    hour = str(int(hour) + 12)
+                                
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
             
                 new_reservation = reservation_table(id=id, container_num=containerNum, tn=tn, request_time=time,accept_time=None, suggestion=None)
@@ -109,7 +114,24 @@ def recommend():
         if(id != ""):
             try:
                 suggestion = reservation_table.query.filter(reservation_table.id==id).first().suggestion.split(',')
-                return suggestion
+                
+                data = []
+                
+                for sug in suggestion:
+                    recTime = sug.split(":")
+                    if(int(recTime[0]) >= 12):
+                        recTime[0] = str(int(recTime[0]) - 12).zfill(2)
+                        ampm = "오후"
+                    else:
+                        ampm = "오전"
+                    data.append({
+                        "ampm":ampm,
+                        "hour":recTime[0],
+                        "minute":recTime[1]
+                    })
+                
+                
+                return data
             except:
                 return jsonify({'result':False})
         else:
@@ -151,10 +173,20 @@ def reservation_state():
             try:
                 reservation = reservation_table.query.filter(reservation_table.id==id).first()
                 terminal = terminal_table.query.filter(terminal_table.tn==reservation.tn).first()
+                
+                time = reservation.accept_time.strftime("%H:%M").split(':')
+                
+                if(int(time[0]) >= 12):
+                    time[0] = str(int(time[0]) - 12).zfill(2)
+                    ampm = "오후"
+                else:
+                    ampm = "오전"
+                
                 data = {
                     'location':terminal.location,
                     'terminal':terminal.name,
-                    'time': reservation.accept_time.strftime("%Y-%m-%d %H:%M:%S")
+                    'ampm':ampm,
+                    'time': reservation.accept_time.strftime("%H:%M")
                 }
 
                 return data
