@@ -75,7 +75,7 @@ def numOfCar():
         if(id != ""):
             try:
                 now = datetime.datetime.now()
-                new_msg = message_table(id=id, message="부두 내 차량 현황을알려주세요.", time=now, sender=True)
+                new_msg = message_table(id=id, message="부두 내 차량 현황을 알려주세요.", time=now, sender=True)
                 db.session.add(new_msg)
                 db.session.commit()
                             
@@ -117,13 +117,8 @@ def resChange():
                 db.session.add(new_msg)
                 db.session.add(new_chat)
                 db.session.commit()
-                            
-                data = {
-                    "description":msg,
-                    "hour":now.hour,
-                    "min":now.minute
-                }
-                return data
+
+                return jsonify({'result':True})
             except:
                 return jsonify({'result':False})
         else:
