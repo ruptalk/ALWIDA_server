@@ -75,7 +75,7 @@ def numOfCar():
         if(id != ""):
             try:
                 now = datetime.datetime.now()
-                new_msg = message_table(id=id, message="부두 내 차량 현황을알려주세요.", time=now, sender=True)
+                new_msg = message_table(id=id, message="부두 내 차량 현황을 알려주세요.", time=now, sender=True)
                 db.session.add(new_msg)
                 db.session.commit()
                             
@@ -117,13 +117,56 @@ def resChange():
                 db.session.add(new_msg)
                 db.session.add(new_chat)
                 db.session.commit()
-                            
+
+                return jsonify({'result':True})
+            except:
+                return jsonify({'result':False})
+        else:
+            return jsonify({'result':'error'}) 
+
+@blue_msg.route("/resInfo", methods=["POST"])
+def resInfo():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            try:
+                res = reservation_table.query.filter(reservation_table.id==id).first()
+                tn = terminal_table.query.filter(terminal_table.tn==res.tn).first()
+                
                 data = {
-                    "description":msg,
-                    "hour":now.hour,
-                    "min":now.minute
+                    "result":True,
+                    "location":tn.location,
+                    "terminal":tn.name
                 }
                 return data
+            except:
+                return jsonify({'result':False})
+        else:
+            return jsonify({'result':'error'}) 
+
+@blue_msg.route("/reservation", methods=["POST"])
+def reservation():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        ampm = request.form.get("ampm","")
+        hour = request.form.get("hour","")
+        min = request.form.get("min","")
+        if(id != "" and ampm != "" and hour != "" and min != ""):
+            try:
+                res = reservation_table.query.filter(reservation_table.id==id).first()
+                now = datetime.datetime.today()
+                
+                if(ampm == "오후"):
+                    hour = str(int(hour)+12)
+                
+                time = datetime.datetime(now.year,now.month,now.day,int(hour),int(min),0)
+                
+                res.request_time = time
+                res.accept_time = None
+                res.suggestion = None
+                db.session.commit()
+                
+                return jsonify({'result':True})
             except:
                 return jsonify({'result':False})
         else:
@@ -148,6 +191,7 @@ def departCancle():
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'}) 
+
 
 @blue_msg.route("/entryRequest", methods=["POST"])
 def entryRequest():
