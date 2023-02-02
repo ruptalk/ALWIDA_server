@@ -1,7 +1,7 @@
 import datetime
 from flask import Blueprint, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import terminal_table, container_table, reservation_table, chatting_table, message_table, db
+from models import terminal_table, container_table, reservation_table, chatting_table, message_table, receipt_table, db
 
 blue_msg = Blueprint("msg", __name__, url_prefix="/msg")
 
@@ -113,9 +113,10 @@ def resChange():
                 reservation.accept_time = time
                 msg = f"예약 변경 요청 완료"
                 new_msg = message_table(id=id, message=msg, time=now, sender=False)
-                new_chat = chatting_table(id=id, state=3)
+                chat = chatting_table.query.filter(chatting_table.id==id).first()
+                chat.state = 3
+                
                 db.session.add(new_msg)
-                db.session.add(new_chat)
                 db.session.commit()
 
                 return jsonify({'result':True})
@@ -181,9 +182,10 @@ def departCancle():
                 now = datetime.datetime.now()
                 msg = "출발 취소 요청"
                 new_msg = message_table(id=id, message=msg, time=now, sender=True)
-                new_chat = chatting_table(id=id, state=4)
+                chat = chatting_table.query.filter(chatting_table.id==id).first()
+                chat.state = 4
+                
                 db.session.add(new_msg)
-                db.session.add(new_chat)
                 db.session.commit()
                 
                 return jsonify({'result':True})
@@ -201,13 +203,19 @@ def entryRequest():
             now = datetime.datetime.now()
             msg = "게이트 진입요청"
             new_msg = message_table(id=id, message=msg, time=now, sender=True)
-            new_chat = chatting_table(id=id, state=5)
+            chat = chatting_table.query.filter(chatting_table.id==id).first()
+            chat.state = 5
+            
+            container_num = reservation_table.query.filter(reservation_table.id==id).first().container_num
+            new_receipt = receipt_table(id=id, container_num=container_num, publish=False, publish_datetime=None)
+            
             db.session.add(new_msg)
-            db.session.add(new_chat)
+            db.session.add(new_receipt)
             db.session.commit()
             
             return jsonify({'result':True})
-        except:
+        except Exception as e:
+            print(e)
             return jsonify({'result':False})
     else:
         return jsonify({'result':'error'}) 

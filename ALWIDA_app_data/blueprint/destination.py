@@ -152,10 +152,11 @@ def accept():
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
                 reservation.accept_time = time
                 
-                new_chat = chatting_table(id=id, state=1)
+                chat = chatting_table.query.filter(chatting_table.id==id).first()
+                chat.state = 1
+                
                 new_msg= message_table(id=id, message="운송작업이 생성되었습니다.\n사전반출입정보 승인",time=datetime.datetime.now(), sender=False)
                 
-                db.session.add(new_chat)
                 db.session.add(new_msg)
                 db.session.commit()
                 return jsonify({'result':True})
