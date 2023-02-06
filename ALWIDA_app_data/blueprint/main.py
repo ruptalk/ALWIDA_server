@@ -3,6 +3,22 @@ from models import user_table, cash_table, check_table, db
 
 blue_main = Blueprint("main", __name__, url_prefix="/main")
 
+@blue_main.route("/name", methods=["POST"])
+def name():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            try:
+                name = user_table.query.filter(user_table.id==id).first().name
+                data = {
+                    "name":name
+                }
+                return data
+            except:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+
 @blue_main.route("/info", methods=["POST"])
 def info():
     if(request.method == "POST"):
