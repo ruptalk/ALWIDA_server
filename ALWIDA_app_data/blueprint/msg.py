@@ -18,7 +18,7 @@ def all():
                 for msg in msgs:
                     data.append({
                         'position': "left" if(msg.sender) else "right",
-                        'message':msg.message,
+                        'text':msg.message,
                         'hour':msg.time.hour,
                         'min':msg.time.minute
                     })
