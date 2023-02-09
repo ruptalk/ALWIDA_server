@@ -5,6 +5,30 @@ from models import terminal_table, container_table, reservation_table, chatting_
 
 blue_msg = Blueprint("msg", __name__, url_prefix="/msg")
 
+@blue_msg.route("/all", methods=["POST"])
+def all():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        if(id != ""):
+            try:
+                msgs = message_table.query.filter(message_table.id==id).order_by(message_table.time).all()
+                
+                data = []
+                
+                for msg in msgs:
+                    data.append({
+                        'sender':msg.sender,
+                        'message':msg.message,
+                        'hour':msg.time.hour,
+                        'min':msg.time.minute
+                    })
+                    
+                return data
+            except:
+                return jsonify({'result':False}) 
+        else:
+            return jsonify({'result':'error'})
+
 @blue_msg.route("/info", methods=["POST"])
 def info():
     if(request.method == "POST"):
