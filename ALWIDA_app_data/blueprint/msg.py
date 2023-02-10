@@ -263,3 +263,25 @@ def coordinate():
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'}) 
+        
+@blue_msg.route("/distance", methods=["POST"])
+def distance():
+    if(request.method == "POST"):
+        id = request.form.get("id","")
+        msg = request.form.get("msg","")
+        if(id != "" and msg != ""):
+            try:
+                now = datetime.datetime.now()
+                new_msg = message_table(id=id, message=msg, time=now, sender=True)
+                chat = chatting_table.query.filter(chatting_table.id==id).first()
+                chat.state = 2
+                
+                db.session.add(new_msg)
+                db.session.commit()
+                
+                return jsonify({'result':True})
+            except:
+                return jsonify({'result':False})
+        else:
+            return jsonify({'result':'error'}) 
+        
