@@ -9,14 +9,16 @@ def check():
     if(request.method == "POST"):
         id = request.form.get("id","")
         img = request.files['file']
-        if(id != ""):
+        
+        if(id != "" and img):
             try:
                 new_check = check_table(idx=None, id=id, request_time=datetime.datetime.now(), img=img.read(), result=0)
                 db.session.add(new_check)
                 db.session.commit()
 
                 return jsonify({'result':True})
-            except:
+            except Exception as e:
+                print(e)
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'}) 
