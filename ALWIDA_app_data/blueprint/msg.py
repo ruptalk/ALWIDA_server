@@ -203,13 +203,9 @@ def departCancle():
         id = request.form.get("id","")
         if(id != ""):
             try:
-                now = datetime.datetime.now()
-                msg = "출발 취소 요청"
-                new_msg = message_table(id=id, message=msg, time=now, sender=True)
-                chat = chatting_table.query.filter(chatting_table.id==id).first()
-                chat.state = 4
-                
-                db.session.add(new_msg)
+                chatting_table.query.filter(chatting_table.id==id).delete()
+                message_table.query.filter(message_table.id==id).delete()
+        
                 db.session.commit()
                 
                 return jsonify({'result':True})
@@ -231,7 +227,7 @@ def entryRequest():
             chat.state = 5
             
             container_num = reservation_table.query.filter(reservation_table.id==id).first().container_num
-            new_receipt = receipt_table(id=id, container_num=container_num, publish=False, publish_datetime=None)
+            new_receipt = receipt_table(id=id, container_num=container_num, publish=False, publish_datetime=now)
             
             db.session.add(new_msg)
             db.session.add(new_receipt)
