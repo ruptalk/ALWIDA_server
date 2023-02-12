@@ -204,13 +204,13 @@ def departCancle():
         if(id != ""):
             try:
                 reservation_table.query.filter(reservation_table.id==id).delete()
-                chatting_table.query.filter(chatting_table.id==id).delete()
                 message_table.query.filter(message_table.id==id).delete()
-        
+                chatting_table.query.filter(chatting_table.id==id).delete()
                 db.session.commit()
                 
                 return jsonify({'result':True})
-            except:
+            except Exception as e:
+                print(e)
                 return jsonify({'result':False})
         else:
             return jsonify({'result':'error'}) 
