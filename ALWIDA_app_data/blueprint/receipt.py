@@ -14,7 +14,7 @@ def receipt():
                 data = {
                     "terminalName":container.tn,
                     "issue":receipt.publish,
-                    "date":receipt.publish_datetime,
+                    "date":receipt.publish_datetime.strftime('%m/%d %H:%M'),
                     "divison":"반입" if(container.in_out) else "반출",
                     "containerNum":container.container_num,
                     "deviceLocation":container.position,
