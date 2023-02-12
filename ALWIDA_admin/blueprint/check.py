@@ -39,10 +39,11 @@ def check():
         
         return render_template('check.html', check_waits=check_wait,check_results=check_result, select_tn=select_tn, tns=select_tn_func(), usr=usr, check=is_login())
     elif(request.method=="POST"):
+        idx = request.form.get("idx")
         id = request.form.get("id")
         type = request.form.get("type")
         
-        check = check_table.query.filter(check_table.id==id).first()
+        check = check_table.query.filter((check_table.idx==idx) & (check_table.id==id)).first()
         if(type=="pass"):
             check.result=3
         elif(type=="fail"):
