@@ -203,6 +203,7 @@ def departCancle():
         id = request.form.get("id","")
         if(id != ""):
             try:
+                reservation_table.query.filter(reservation_table.id==id).delete()
                 chatting_table.query.filter(chatting_table.id==id).delete()
                 message_table.query.filter(message_table.id==id).delete()
         
