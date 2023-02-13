@@ -1,7 +1,7 @@
 import random
 import datetime
 from flask import Blueprint, request, jsonify
-from models import user_table, terminal_table, reservation_table, container_table, chatting_table, message_table, db
+from models import user_table, terminal_table, reservation_table, container_table, chatting_table, message_table, receipt_table, db
 
 blue_dest = Blueprint("dest", __name__, url_prefix="/dest")
 
@@ -99,6 +99,9 @@ def reservation():
                 
                 db.session.add(new_reservation)
                 db.session.add(new_chat)
+                
+                receipt_table.query.filter(receipt_table.id == id).delete()
+                
                 db.session.commit()
             
                 return jsonify({'result':True})
