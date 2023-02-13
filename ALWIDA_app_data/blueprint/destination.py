@@ -113,7 +113,8 @@ def recommend():
         id = request.form.get("id","")
         if(id != ""):
             try:
-                suggestion = reservation_table.query.filter(reservation_table.id==id).first().suggestion.split(',')
+                reservation = reservation_table.query.filter(reservation_table.id==id).first()
+                suggestion = reservation.suggestion.split(',')
                 
                 data = []
                 
@@ -131,7 +132,7 @@ def recommend():
                     })
                 
                 
-                return data
+                return {'tn':reservation.tn,'time':data}
             except:
                 return jsonify({'result':False})
         else:
