@@ -141,12 +141,16 @@ def recommend():
 def accept():
     if(request.method == "POST"):
         id = request.form.get("id","")
+        ampm = request.form.get("ampm","")
         hour = request.form.get("hour","")
         minute = request.form.get("minute","")
         
         if(id != "" and hour != "" and minute != ""):
             try:
                 reservation = reservation_table.query.filter(reservation_table.id==id).first()
+
+                if(ampm == "오후"):
+                    hour = str(int(hour) + 12)
 
                 now = datetime.date.today()
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
