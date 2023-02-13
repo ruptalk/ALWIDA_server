@@ -1,5 +1,5 @@
 from flask import Blueprint, request, session, render_template
-from models import receipt_table, container_table, db
+from models import receipt_table, cash_table, container_table, db
 
 blue_receipt = Blueprint("receipt", __name__, url_prefix="/receipt")
 
@@ -29,6 +29,9 @@ def receipt():
             container_num = request.form.get("container_num","")
             receipt = receipt_table.query.filter((receipt_table.id==id)&(receipt_table.container_num==container_num)).first()
             receipt.publish = True
+            
+            new_cash = cash_table(idx=None, id=id, container_num=container_num, publish_pay=False, pay_datetime=None)
+            db.session.add(new_cash)
             db.session.commit()
         
             return alert('발급완료!')
