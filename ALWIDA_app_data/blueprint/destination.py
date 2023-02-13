@@ -94,14 +94,17 @@ def reservation():
                 time = datetime.datetime(now.year,now.month,now.day,int(hour),int(minute),0)
             
                 new_reservation = reservation_table(id=id, container_num=containerNum, tn=tn, request_time=time,accept_time=None, suggestion=None)
+                
+                container = container_table.query.filter(container_table.container_num==containerNum).first()
+                container.tn = tn
+                container.id = id
 
                 new_chat = chatting_table(id=id, state=0)
                 
-                db.session.add(new_reservation)
-                db.session.add(new_chat)
-                
                 receipt_table.query.filter(receipt_table.id == id).delete()
                 
+                db.session.add(new_reservation)
+                db.session.add(new_chat)
                 db.session.commit()
             
                 return jsonify({'result':True})
