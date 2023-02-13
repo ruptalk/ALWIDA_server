@@ -64,11 +64,13 @@ def container_update():
         position = request.form.get("position","")
         scale = request.form.get("scale","")
         fm = request.form.get("fm","")
-        
+        tn = request.form.get("tn","")
+                
         contaniner = container_table.query.filter_by(container_num=container_num).first()
         contaniner.position = position
         contaniner.scale = scale
         contaniner.fm = fm
+        contaniner.tn = tn
         
         db.session.commit()
         return alert("완료!")
@@ -76,7 +78,7 @@ def container_update():
         return alert("에러발생")
     
 @blue_container.route("/add", methods=["POST"])
-def container_add():
+def add():
     if not is_login():
         return alert("로그인부터 해주세요!","/acc/signin")
     try:
