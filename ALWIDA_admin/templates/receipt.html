@@ -8,6 +8,19 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
 
+<form action="{{ url_for("receipt.receipt") }}" id="group_form" method="GET">
+  <div style="float: left;">
+    <select name="select_tn" onchange="this.form.submit()">
+      {% for tn in tns%}
+      {% if tn[0] == select_tn %}
+      <option value="{{tn[0]}}" selected>{{tn[0]}} </option>
+      {% else %}
+      <option value="{{tn[0]}}">{{tn[0]}}</option>
+      {% endif %}
+      {% endfor%}
+    </select>
+  </div>
+</form>
 
 <table id='receipt-table' class="hover order-column">
   <thead>
