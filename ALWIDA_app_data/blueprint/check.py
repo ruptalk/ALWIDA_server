@@ -1,6 +1,7 @@
 import datetime
 from flask import Blueprint, request, jsonify
 from models import check_table, db
+
 blue_check = Blueprint("check", __name__, url_prefix="/check")
 
 @blue_check.route("/", methods=["POST"])
@@ -11,7 +12,6 @@ def check():
         
         if(id != "" and img):
             try:
-                img = img.resize((800,600))
                 new_check = check_table(idx=None, id=id, request_time=datetime.datetime.now(), img=img.read(), result=0)
                 db.session.add(new_check)
                 db.session.commit()
