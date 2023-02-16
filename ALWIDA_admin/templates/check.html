@@ -42,16 +42,16 @@
         <td>{{check_wait[0]}}</td>
         <td>{{check_wait[2]}}</td>
         <td>{{check_wait[1]}}</td>
-        <td>{{check_wait[6]}}</td>
         <td>{{check_wait[5]}}</td>
-        {% if check_wait[4] == 0 %}
+        <td>{{check_wait[4]}}</td>
+        {% if check_wait[3] == 0 %}
         <td>수신대기</td>
-        {% elif check_wait[4] == 1 %}
+        {% elif check_wait[3] == 1 %}
         <td>수신완료</td>
         {% else %}
         <td>보류</td>
         {% endif %}
-        <td style="display:none;">{{check_wait[3]}}</td>
+        <td style="display:none;">{{check_wait[2]}}</td>
     </tr>
       {% endfor %}
   </tbody>
@@ -180,8 +180,25 @@
           document.getElementById("id").value = id;
           document.getElementById("idx").value = idx;
           document.getElementById('h2_num').innerHTML = "컨테이너 번호 : " + container_num;
-          document.getElementById('img').src = "data:image/png;base64," + img;
           modal.style.display = "block";
+
+          var data = {
+            'idx' : idx
+          }
+
+          $.ajax({
+            type: 'POST',
+            url: '{{ url_for("check.img") }}',
+            data: JSON.stringify(data),
+            dataType : 'JSON',
+            contentType: 'application/json',
+            success: function(data){
+              document.getElementById('img').src = "data:image/png;base64," + data["img"];
+            },
+            error: function(request, status, error){
+              alert('ajax 통신 실패');
+            }
+          })
        }
     }(row);
   }
