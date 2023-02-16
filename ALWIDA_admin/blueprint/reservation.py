@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import func
 from flask import Blueprint, request, session, render_template
 from models import terminal_table, reservation_table, db
@@ -28,8 +29,7 @@ def congestion(count):
         return '혼잡'
 
 def recommand(accept):
-    # now = datetime.now().strftime('%H%M')
-    now = '0600'
+    now = datetime.now().strftime('%H%M')
     result = dict()
     accept =  [[x[0],x[1]] for x in accept]
     for acc in accept:
