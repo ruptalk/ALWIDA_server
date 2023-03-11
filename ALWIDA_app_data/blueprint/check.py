@@ -4,7 +4,7 @@ from models import check_table, db
 
 blue_check = Blueprint("check", __name__, url_prefix="/check")
 
-@blue_check.route("/", methods=["POST"])
+@blue_check.route("/", methods=["POST"], strict_slashes=False)
 def check():
     if(request.method == "POST"):
         id = request.form.get("id","")
