@@ -9,6 +9,8 @@ services:
       - ./ALWIDA_admin:/usr/src/app
     environment:
       - TZ=Asia/Seoul
+    depends_on:
+      - mariadb
   app_data:
     build: ./ALWIDA_app_data
     image: alwida/app_data
@@ -18,6 +20,8 @@ services:
       - ./ALWIDA_app_data:/usr/src/app
     environment:
       - TZ=Asia/Seoul
+    depends_on:
+      - mariadb
   mariadb:
     build: ./MariaDB
     image: alwida/mariadb
