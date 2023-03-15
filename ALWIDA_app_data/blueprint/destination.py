@@ -27,8 +27,7 @@ def dest():
             json_data = {}
             json_data["index"] = len(data[loc_index[tm.location]]["terminals"])
             json_data["terminal"] = tm.name
-            # json_data["percentage"] = tm.car_amount
-            json_data["percentage"] = random.randrange(0,100)
+            json_data["percentage"] = tm.car_amount
             if(tm.car_amount < tm.easy):
                 json_data["status"] = "원활"
                 json_data["color"] = "#32B32D"
@@ -98,6 +97,7 @@ def reservation():
                 container = container_table.query.filter(container_table.container_num==containerNum).first()
                 container.tn = tn
                 container.id = id
+                
 
                 new_chat = chatting_table(id=id, state=0)
                 
